@@ -8,7 +8,7 @@ function createMainWindow() {
     mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, '/dist/index.html'),
+        pathname: path.join(__dirname, '../../dist/index.html'),
         protocol: 'file',
         slashes: true
     }));

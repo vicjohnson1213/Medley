@@ -1,7 +1,7 @@
 {
-  "name": "notable",
+  "name": "markdown",
   "version": "0.0.0",
-  "main": "main.js",
+  "main": "src/main/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng build --base-href ./ && electron ."
@@ -16,6 +16,7 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
+    "angular-split": "^3.0.0-beta.5",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
@@ -31,6 +32,7 @@
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "electron": "^4.0.1",
+    "electron-reloader": "^0.2.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.1.1",

@@ -1,0 +1,19 @@
+.container {
+    height: 100vh;
+}
+
+as-split-area {
+}
+
+::ng-deep .as-split-gutter {
+    background-color: tomato !important;
+    position: relative;
+}
+
+::ng-deep .as-split-gutter-icon {
+    background-image: none !important;
+    position: absolute;
+    width: 5px !important;
+    left: -2px;
+    right: 2px;
+}
