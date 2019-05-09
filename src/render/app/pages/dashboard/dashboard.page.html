@@ -1,13 +1,10 @@
 <div class="container">
-    <as-split unit="percent" direction="horizontal" gutterSize="1">
-        <as-split-area size="20" minSize="15">
-
+    <as-split unit="pixel" direction="horizontal" gutterSize="1">
+        <as-split-area size="220">
+            <md-note-tree [nodes]="notes$ | async"></md-note-tree>
         </as-split-area>
-        <as-split-area size="20" minSize="15">
-
-        </as-split-area>
-        <as-split-area size="60" minSize="50">
-
+        <as-split-area size="*" class="editor-pane">
+            <md-editor></md-editor>
         </as-split-area>
     </as-split>
 </div>

@@ -1,4 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { AppState } from '../../services';
+import { NoteTreeNode } from '../../models';
 
 @Component({
     selector: 'note-page-dashboard',
@@ -6,5 +10,12 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     styleUrls: ['./dashboard.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardPageComponent {
+export class DashboardPageComponent implements OnInit {
+    notes$: Observable<NoteTreeNode[]>;
+
+    constructor(private state: AppState) {}
+
+    ngOnInit() {
+        this.notes$ = this.state.notes$;
+    }
 }

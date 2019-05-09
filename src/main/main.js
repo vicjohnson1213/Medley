@@ -1,22 +1,8 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
 
 let mainWindow;
-
-function createMainWindow() {
-    mainWindow = new BrowserWindow({ width: 800, height: 600 });
-
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, '../../dist/index.html'),
-        protocol: 'file',
-        slashes: true
-    }));
-
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
-}
 
 app.on('ready', createMainWindow);
 
@@ -31,3 +17,39 @@ app.on('activate', () => {
         createMainWindow();
     }
 });
+
+function createMainWindow() {
+    mainWindow = new BrowserWindow({ width: 800, height: 600 });
+
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, '../../dist/index.html'),
+        protocol: 'file',
+        slashes: true
+    }));
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+
+    Menu.setApplicationMenu(createMenu());
+    mainWindow.webContents.openDevTools();
+}
+
+function createMenu() {
+    return Menu.buildFromTemplate([{
+        label: 'File',
+        submenu: [
+            { label: 'New Note' }
+        ]
+    }, {
+        label: 'Reload',
+        click: () => {
+            console.log('reloading');
+            mainWindow.loadURL(url.format({
+                pathname: path.join(__dirname, '../../dist/index.html'),
+                protocol: 'file',
+                slashes: true
+            }));
+        }
+    }]);
+}

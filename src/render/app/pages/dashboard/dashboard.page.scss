@@ -3,7 +3,11 @@
 }
 
 as-split-area {
+    &.editor-pane {
+        overflow-y: hidden;
+    }
 }
+
 
 ::ng-deep .as-split-gutter {
     background-color: tomato !important;
@@ -16,4 +20,8 @@ as-split-area {
     width: 5px !important;
     left: -2px;
     right: 2px;
+}
+
+md-note-tree {
+    margin-left: 8px;
 }

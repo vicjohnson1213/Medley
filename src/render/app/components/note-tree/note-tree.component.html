@@ -1,0 +1,4 @@
+<div class="group" *ngFor="let node of nodes">
+    <div (click)="selectNode(node)">{{ node.Name }}</div>
+    <md-note-tree [nodes]="node.Children"></md-note-tree>
+</div>

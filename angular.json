@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
+      "prefix": "md",
       "schematics": {
         "@schematics/angular:component": {
           "styleext": "scss"
@@ -24,7 +24,8 @@
             "tsConfig": "src/render/tsconfig.app.json",
             "assets": [
               "src/render/favicon.ico",
-              "src/render/assets"
+              "src/render/assets",
+              { "glob": "**/*", "input": "node_modules/ngx-monaco-editor/assets/monaco", "output": "assets/monaco/" }
             ],
             "styles": [
               "src/render/styles.scss"
@@ -135,5 +136,5 @@
       }
     }
   },
-  "defaultProject": "notable"
+  "defaultProject": "markdown-editor"
 }

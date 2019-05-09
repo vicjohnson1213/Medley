@@ -1,0 +1,6 @@
+<ng-container *ngIf="note$ | async; else empty">
+    <ngx-monaco-editor [options]="editorOptions" [formControl]="content"></ngx-monaco-editor>
+</ng-container>
+<ng-template #empty>
+    No content
+</ng-template>
