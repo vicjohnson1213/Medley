@@ -25,7 +25,7 @@
             "assets": [
               "src/render/favicon.ico",
               "src/render/assets",
-              { "glob": "**/*", "input": "node_modules/ngx-monaco-editor/assets/monaco", "output": "assets/monaco/" }
+              { "glob": "**/*", "input": "node_modules/monaco-editor/dev/vs", "output": "assets/vs/" }
             ],
             "styles": [
               "src/render/styles.scss"

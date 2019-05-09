@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build --base-href ./",
+    "watch": "ng build --base-href ./ --watch=true",
     "start": "ng build --base-href ./ && electron .",
     "electron": "electron ."
   },
@@ -20,8 +21,7 @@
     "@angular/router": "~7.2.0",
     "angular-split": "^3.0.0-beta.5",
     "core-js": "^2.5.4",
-    "electron-reload": "^1.4.0",
-    "ngx-monaco-editor": "^7.0.0",
+    "monaco-editor": "^0.17.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
