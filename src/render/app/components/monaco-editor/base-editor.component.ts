@@ -30,25 +30,6 @@ export abstract class BaseEditor implements AfterViewInit, OnDestroy {
     constructor(private config: NgxMonacoEditorConfig) { }
 
     ngAfterViewInit(): void {
-        // const onGotAmdLoader = () => {
-        //     // Load monaco
-        //     (<any>window).require(["vs/editor/editor.main"], () => {
-        //         this.initMonaco(this.options);
-        //     });
-        // };
-
-        // const nodeRequire = require;
-        // const loader = require('monaco-editor/dev/vs/loader');
-
-
-        // // const require = loader.require;
-
-        // require.config({
-        //     baseUrl: `assets`
-        // });
-
-        // (<any>window).module = undefined;
-
         (<any>window).amdRequire(['vs/editor/editor.main'], () => {
             this.initMonaco(this.options);
         });

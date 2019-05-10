@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, Subscription } from 'rxjs';
 import { filter, debounceTime, tap, switchMap } from 'rxjs/operators';
 
 import { AppState } from '../../services';
-import { NoteTreeNode } from '../../models';
+import { Note } from '../../models';
 
 @Component({
     selector: 'md-editor',
@@ -12,7 +12,13 @@ import { NoteTreeNode } from '../../models';
     styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit, OnDestroy {
-    note$: Observable<NoteTreeNode>;
+    @Input() resize$: Observable<void>;
+
+    private noteSubscription: Subscription;
+    private valueSubscription: Subscription;
+
+    note$: Observable<Note>;
+
     content: FormControl;
 
     editorOptions = {
@@ -21,6 +27,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         dragAndDrop: false,
         language: 'markdown',
         lineNumbers: 'off',
+        links: true,
         minimap: {
             enabled: false
         },
@@ -32,16 +39,21 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.note$ = this.state.activeNote$;
-        this.note$.pipe(
-            filter(note => !!note),
-            tap(note => this.content = new FormControl(note.Content)),
-            switchMap(() => this.content.valueChanges),
-            debounceTime(1000)
-        ).subscribe(value => {
-            // save the updated content here.
+        this.noteSubscription = this.note$.pipe(
+            filter(note => !!note)
+        ).subscribe(note => {
+            this.content = new FormControl(note.Content);
+            this.valueSubscription = this.content.valueChanges.pipe(
+                debounceTime(1000)
+            ).subscribe(value => {
+                note.Content = value;
+                this.state.saveNote(note);
+            });
         });
     }
 
     ngOnDestroy() {
+        this.noteSubscription.unsubscribe();
+        this.valueSubscription.unsubscribe();
     }
 }

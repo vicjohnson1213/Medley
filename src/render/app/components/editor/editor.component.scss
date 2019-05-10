@@ -1,5 +1,16 @@
+:host {
+    display: block;
+}
+
 ngx-monaco-editor {
     ::ng-deep .editor-container {
-        height: 100vh;
+        height: 100%;
     }
+}
+
+.empty {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 32px;
+    color: #CCC;
 }

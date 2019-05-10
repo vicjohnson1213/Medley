@@ -1,10 +1,19 @@
 <div class="container">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
-        <as-split-area size="220">
-            <md-note-tree [nodes]="notes$ | async"></md-note-tree>
+        <as-split-area size="220" class="tree-pane">
+            <div class="toolbar">
+                <button (click)="newNote()"><i class="material-icons">add</i></button>
+            </div>
+            <md-note-tree [notes]="notes$ | async"></md-note-tree>
         </as-split-area>
         <as-split-area size="*" class="editor-pane">
-            <md-editor></md-editor>
+            <div class="toolbar">
+                <div class="button-group">
+                    <button (click)="setMode()"><i class="material-icons">edit</i></button>
+                    <button class="active" (click)="setMode()"><i class="material-icons">photo</i></button>
+                </div>
+            </div>
+            <md-editor [resize$]="resize$"></md-editor>
         </as-split-area>
     </as-split>
 </div>

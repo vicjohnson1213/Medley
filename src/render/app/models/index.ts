@@ -1,1 +1,1 @@
-export * from './note-tree-node';
+export * from './note';

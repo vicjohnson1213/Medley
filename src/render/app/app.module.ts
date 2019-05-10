@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule, NgxMonacoEditorConfig } from './components/monaco-editor';
@@ -18,6 +19,7 @@ import { services } from './services';
     ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         AppRoutingModule,
         FormsModule,
         ReactiveFormsModule,

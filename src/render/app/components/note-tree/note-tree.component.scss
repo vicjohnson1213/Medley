@@ -3,7 +3,22 @@
 }
 
 .group {
-    padding-top: 4px;
+    padding-top: 8px;
+}
+
+.tree-node {
+    display: flex;
+    align-items: center;
+
+    i {
+        font-size: 20px;
+        margin-right: 6px;
+        color: #AAA
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 md-note-tree {

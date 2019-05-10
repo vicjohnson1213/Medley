@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs';
 
-export interface NoteTreeNode {
+export interface Note {
     Name: string;
     Content?: string;
     Path: string;
-    Children?: NoteTreeNode[];
+    Children?: Note[];
+    Expanded?: boolean;
 }

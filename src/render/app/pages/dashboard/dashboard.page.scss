@@ -3,15 +3,41 @@
 }
 
 as-split-area {
+    &.tree-pane {
+        background-color: #222222;
+        color: #F0F0F0;
+
+        .toolbar {
+            background-color: transparent;
+        }
+    }
+
     &.editor-pane {
         overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .toolbar {
+            background-color: #444444;
+            button {
+                &.active {
+                    background-color: #666666;
+                    color: #CCCCCC;
+                }
+            }
+        }
+
+        md-editor {
+            margin-top: 2px;
+            flex: 1;
+        }
     }
 }
 
-
 ::ng-deep .as-split-gutter {
-    background-color: tomato !important;
+    background-color: transparent !important;
     position: relative;
+    flex-basis: 0px !important;
 }
 
 ::ng-deep .as-split-gutter-icon {

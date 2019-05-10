@@ -1,4 +1,11 @@
-<div class="group" *ngFor="let node of nodes">
-    <div (click)="selectNode(node)">{{ node.Name }}</div>
-    <md-note-tree [nodes]="node.Children"></md-note-tree>
+<div class="group" *ngFor="let note of notes">
+    <div class="tree-node no-select" (click)="click(note)">
+        <i class="material-icons" *ngIf="note.Children">
+            <ng-container *ngIf="note.Expanded">folder_open</ng-container>
+            <ng-container *ngIf="!note.Expanded">folder</ng-container>
+        </i>
+        <i class="material-icons" *ngIf="!note.Children">sim_card</i>
+        {{ note.Name }}
+    </div>
+    <md-note-tree [notes]="note.Children" *ngIf="note.Expanded" [@enter]></md-note-tree>
 </div>
