@@ -9,8 +9,8 @@
         <as-split-area size="*" class="editor-pane">
             <div class="toolbar">
                 <div class="button-group">
-                    <button (click)="setMode()"><i class="material-icons">edit</i></button>
-                    <button class="active" (click)="setMode()"><i class="material-icons">photo</i></button>
+                    <button class="active" (click)="setMode()"><i class="material-icons">edit</i></button>
+                    <button (click)="setMode()"><i class="material-icons">photo</i></button>
                 </div>
             </div>
             <md-editor [resize$]="resize$"></md-editor>

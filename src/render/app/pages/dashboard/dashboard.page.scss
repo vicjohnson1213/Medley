@@ -20,7 +20,7 @@ as-split-area {
         .toolbar {
             background-color: #444444;
             button {
-                &.active {
+                &:not(.active) {
                     background-color: #666666;
                     color: #CCCCCC;
                 }

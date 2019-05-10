@@ -16,7 +16,7 @@ body {
         display: inline-block;
 
         button {
-            &.active {
+            &:not(.active) {
                 &:hover {
                     cursor: default;
                 }
