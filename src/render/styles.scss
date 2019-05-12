@@ -7,10 +7,15 @@
 body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
+    background-color: black;
 }
 
 .toolbar {
-    padding: 8px 16px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+
+    padding: 8px;
 
     .button-group {
         display: inline-block;
@@ -65,7 +70,6 @@ body {
         }
     }
 }
-
 
 .no-select {
     user-select: none;

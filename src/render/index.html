@@ -34,9 +34,11 @@
             }
             return encodeURI('file://' + pathName);
         }
+
         amdRequire.config({
             baseUrl: uriFromPath(path.join(__dirname, '../node_modules/monaco-editor/min'))
         });
+
         // workaround monaco-css not understanding the environment
         self.module = undefined;
     </script>

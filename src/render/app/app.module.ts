@@ -27,7 +27,8 @@ import { services } from './services';
         MonacoEditorModule.forRoot()
     ],
     providers: [
-        ...services
+        ...services,
+        { provide: 'Monaco', useValue: (<any>window).monaco }
     ],
     bootstrap: [AppComponent]
 })

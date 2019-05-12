@@ -1,12 +1,12 @@
-import { Component, forwardRef, Inject, Input, NgZone, OnInit } from '@angular/core';
+import { Component, forwardRef, Inject, Input, NgZone } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fromEvent, Observable, merge, of } from 'rxjs';
 
 import { BaseEditor } from './base-editor.component';
 import { NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from './config';
 import { NgxEditorModel } from './types';
-
-declare var monaco: any;
+import { LightTheme } from './light.theme';
+import { MarkdownImproved } from './markdown-improved';
 
 @Component({
     selector: 'ngx-monaco-editor',
@@ -35,7 +35,9 @@ export class EditorComponent extends BaseEditor implements ControlValueAccessor 
         }
     }
 
-    constructor(private zone: NgZone, @Inject(NGX_MONACO_EDITOR_CONFIG) private editorConfig: NgxMonacoEditorConfig) {
+    constructor(
+        private zone: NgZone,
+        @Inject(NGX_MONACO_EDITOR_CONFIG) private editorConfig: NgxMonacoEditorConfig) {
         super(editorConfig);
     }
 
@@ -58,6 +60,7 @@ export class EditorComponent extends BaseEditor implements ControlValueAccessor 
     }
 
     protected initMonaco(options: any): void {
+        const monaco = (<any>window).monaco;
         const hasModel = !!options.model;
 
         if (hasModel) {
@@ -69,6 +72,11 @@ export class EditorComponent extends BaseEditor implements ControlValueAccessor 
                 options.model = monaco.editor.createModel(options.model.value, options.model.language, options.model.uri);
             }
         }
+
+        monaco.editor.defineTheme('light-theme', LightTheme);
+        monaco.editor.setTheme('light-theme');
+        monaco.languages.register({ id: 'markdown-improved' });
+        monaco.languages.setMonarchTokensProvider('markdown-improved', MarkdownImproved);
 
         this._editor = monaco.editor.create(this._editorContainer.nativeElement, options);
 

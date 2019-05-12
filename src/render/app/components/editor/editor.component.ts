@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, combineLatest, Subscription } from 'rxjs';
-import { filter, debounceTime, tap, switchMap } from 'rxjs/operators';
+import { filter, debounceTime, tap, switchMap, take, distinctUntilChanged } from 'rxjs/operators';
 
 import { AppState } from '../../services';
 import { Note } from '../../models';
@@ -17,37 +18,71 @@ export class EditorComponent implements OnInit, OnDestroy {
     private noteSubscription: Subscription;
     private valueSubscription: Subscription;
 
-    note$: Observable<Note>;
-
-    content: FormControl;
+    note: Note;
+    form: FormGroup;
 
     editorOptions = {
+        language: 'markdown-improved',
+        theme: 'light-theme',
+
         autoIndent: true,
+        colorDecorators: false,
         contextmenu: false,
+        copyWithSyntaxHighlighting: false,
+        disableLayerHinting: true,
         dragAndDrop: false,
-        language: 'markdown',
+        folding: false,
+        highlightActiveIndentGuide: false,
+        hover: {
+          enabled: false
+        },
+        iconsInSuggestions: false,
+        lightbulb: {
+            enabled: false
+        },
+        lineDecorationsWidth: 0,
         lineNumbers: 'off',
         links: true,
         minimap: {
             enabled: false
         },
-        renderWhitespace: 'all',
+        occurrencesHighlight: false,
+        scrollbar: {
+            useShadows: false,
+            horizontalScrollbarSize: 12,
+            verticalScrollbarSize: 12
+        },
+        snippetSuggestions: 'none',
+        wordBasedSuggestions: false,
         wordWrap: 'on',
+        wrappingIndent: 'same',
     };
 
-    constructor(private state: AppState) {}
+    constructor(
+        private fb: FormBuilder,
+        private zone: NgZone,
+        private state: AppState) {}
 
     ngOnInit() {
-        this.note$ = this.state.activeNote$;
-        this.noteSubscription = this.note$.pipe(
+        this.form = this.fb.group({
+            content: ['']
+        });
+
+        this.valueSubscription = this.form.get('content').valueChanges.pipe(
+            debounceTime(1000),
+            distinctUntilChanged()
+        ).subscribe(value => {
+            console.log('saving');
+            this.note.Content = value;
+            this.state.saveNote(this.note);
+        });
+
+        this.noteSubscription = this.state.activeNote$.pipe(
             filter(note => !!note)
         ).subscribe(note => {
-            this.content = new FormControl(note.Content);
-            this.valueSubscription = this.content.valueChanges.pipe(
-                debounceTime(1000)
-            ).subscribe(value => {
-                note.Content = value;
-                this.state.saveNote(note);
+            this.note = note;
+            this.form.patchValue({
+                content: note.Content
             });
         });
     }

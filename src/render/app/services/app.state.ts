@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { IpcRenderer } from 'electron';
 import { Note } from '../models';
 import { BehaviorSubject, of } from 'rxjs';
@@ -35,6 +35,8 @@ export class AppState {
     private notesSub$ = new BehaviorSubject<Note[]>([]);
     notes$ = this.notesSub$.asObservable();
 
+    createNoteRequest = new EventEmitter();
+
     constructor(private zone: NgZone) {
         this.ipc = (<any>window).require('electron').ipcRenderer;
         this.initNotes();
@@ -47,8 +49,18 @@ export class AppState {
         });
 
         this.ipc.on('loadNoteResponse', (event, content) => {
-            const note = this.activeNoteSub$.value;
-            note.Content = content;
+            this.zone.run(() => {
+                const note = this.activeNoteSub$.value;
+                note.Content = content;
+                this.activeNoteSub$.next(note);
+            });
+        });
+
+        this.ipc.on('createNoteRequest', () => {
+            this.createNoteRequest.emit();
+        });
+
+        this.ipc.on('noteCreated', (event, note) => {
             this.activeNoteSub$.next(note);
         });
     }
@@ -60,6 +72,10 @@ export class AppState {
 
     saveNote(note: Note) {
         this.ipc.send('saveNote', note);
+    }
+
+    createNote(name: string, parent?: string) {
+        this.ipc.send('createNoteRequest', name, parent);
     }
 
     initNotes() {

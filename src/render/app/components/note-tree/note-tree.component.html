@@ -1,11 +1,13 @@
 <div class="group" *ngFor="let note of notes">
     <div class="tree-node no-select" (click)="click(note)">
-        <i class="material-icons" *ngIf="note.Children">
+        <!-- <i class="material-icons" *ngIf="note.Children">
             <ng-container *ngIf="note.Expanded">folder_open</ng-container>
             <ng-container *ngIf="!note.Expanded">folder</ng-container>
-        </i>
-        <i class="material-icons" *ngIf="!note.Children">sim_card</i>
+        </i> -->
+        <i class="material-icons" *ngIf="note.Children">folder</i>
+        <i class="material-icons" *ngIf="!note.Children">font_download</i>
         {{ note.Name }}
     </div>
-    <md-note-tree [notes]="note.Children" *ngIf="note.Expanded" [@enter]></md-note-tree>
+    <!-- <md-note-tree [notes]="note.Children" *ngIf="note.Expanded" (select)="click($event)" [@expandInOut]></md-note-tree> -->
+    <md-note-tree [notes]="note.Children" (select)="click($event)"></md-note-tree>
 </div>

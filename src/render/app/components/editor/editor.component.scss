@@ -1,8 +1,15 @@
 :host {
     display: block;
+    position: relative;
 }
 
 ngx-monaco-editor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
     ::ng-deep .editor-container {
         height: 100%;
     }

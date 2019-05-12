@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, NgZone, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, EventEmitter, OnDestroy, HostListener } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SplitComponent } from 'angular-split';
 import { Observable, Subscription } from 'rxjs';
 
@@ -12,33 +13,64 @@ import { Note } from '../../models';
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
     @ViewChild(SplitComponent) splitEl: SplitComponent;
+    form: FormGroup;
 
-    notes$: Observable<Note[]>;
-    
-    private onDrag$: Subscription;
+    private creationSubscription: Subscription;
+    private onDragSubscription: Subscription;
+
     private resizeEmitter = new EventEmitter();
     resize$ = this.resizeEmitter.asObservable();
 
-    constructor(
-        private state: AppState,
-        private zone: NgZone) {}
+    notes$: Observable<Note[]>;
+    activeNote$: Observable<Note>
+    showModal = false;
 
-    newNote() {
-        console.log('create a new note here');
+    constructor(
+        private fb: FormBuilder,
+        private zone: NgZone,
+        private state: AppState) {}
+
+    ngOnInit() {
+        this.notes$ = this.state.notes$;
+        this.activeNote$ = this.state.activeNote$;
+
+        this.form = this.fb.group({
+            name: ['', Validators.required]
+        });
+
+        this.onDragSubscription = this.splitEl.dragProgress$.subscribe(() => {
+            this.zone.run(() => this.resizeEmitter.emit());
+        });
+
+        this.creationSubscription = this.state.createNoteRequest.subscribe(() => {
+            this.zone.run(() => this.showModal = true);
+        });
+    }
+
+    ngOnDestroy() {
+        this.onDragSubscription.unsubscribe();
+        this.creationSubscription.unsubscribe();
+    }
+
+    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        this.showModal = false;
+    }
+
+    createNote() {
+        const name = this.form.value.name;
+        this.state.createNote(name);
+        this.showModal = false;
+    }
+
+    dismissModal() {
+        this.showModal = false;
     }
 
     setMode(mode: 'edit' | 'view') {
         console.log('set the display mode here');
     }
 
-    ngOnInit() {
-        this.notes$ = this.state.notes$;
-        this.onDrag$ = this.splitEl.dragProgress$.subscribe(() => {
-            this.zone.run(() => this.resizeEmitter.emit());
-        });
-    }
-
-    ngOnDestroy() {
-        this.onDrag$.unsubscribe();
+    selectNote(note: Note) {
+        this.state.setActiveNote(note);
     }
 }

@@ -1,17 +1,15 @@
-const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, shell, globalShortcut } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs').promises;
 
+const utils = require('./utils');
+
+const NOTE_DIR = path.join(process.env.HOME, '.mdedit');
+
 let mainWindow;
 
 app.on('ready', createMainWindow);
-
-// app.on('window-all-closed', () => {
-//     if (process.platform !== 'darwin') {
-//         app.quit();
-//     }
-// });
 
 app.on('activate', () => {
     if (mainWindow === null) {
@@ -37,7 +35,14 @@ function createMainWindow() {
     });
 
     createMenu();
+    registerIPC();
+    registerShortcuts();
+}
 
+function registerShortcuts() {
+}
+
+function registerIPC() {
     ipcMain.on('getNotes', (event, args) => {
         getNotes();
     });
@@ -51,53 +56,44 @@ function createMainWindow() {
     ipcMain.on('saveNote', (event, note) => {
         fs.writeFile(note.Path, note.Content);
     });
+
+    ipcMain.on('createNoteRequest', (event, name, parent) => {
+        const fullName = path.extname(name) === '.md' ? name : `${name}.md`;
+        const filePath = parent ? path.join(parent, fullName) : path.join(NOTE_DIR, fullName);
+        const dirname = path.dirname(filePath);
+        fs.mkdir(dirname, { recursive: true })
+            .then(() => {
+                return fs.writeFile(filePath, '', { flag: 'wx' });
+            }).then(() => {
+                mainWindow.webContents.send('noteCreated', {
+                    Name: name,
+                    Path: filePath
+                })
+                getNotes();
+            }).catch((err) => {
+                console.error(err)
+                mainWindow.webContents.send('errorCreatingNote')
+            });
+        
+    });
 }
 
 function getNotes() {
-    buildTree(path.join(process.env.HOME, '.mdedit'))
+    utils.buildTree(NOTE_DIR)
             .then((tree) => mainWindow.webContents.send('getNotesResponse', tree));
-}
-
-function buildTree(dir) {
-    return new Promise((res, rej) => {
-        fs.readdir(dir)
-            .then(files => Promise.all(files.map(f => path.join(dir, f)).map(buildTreeP)))
-            .then(res);
-    });
-}
-
-function buildTreeP(dir) {
-    return new Promise((res, rej) => {
-        fs.stat(dir).then(stats => {
-            if (stats.isFile()) {
-                res({
-                    Name: path.basename(dir),
-                    Path: dir
-                });
-            } else if (stats.isDirectory()) {
-                fs.readdir(dir).then(files => {
-                    const children = files
-                        .map(f => path.join(dir, f))
-                        .map(f => buildTreeP(f));
-
-                    Promise.all(children).then(resoloved => {
-                        res({
-                            Name: path.basename(dir),
-                            Path: dir,
-                            Children: resoloved
-                        });
-                    });
-                });
-            }
-        });
-    });
 }
 
 function createMenu() {
     const template = [{
         label: 'File',
         submenu: [
-            { label: 'New Note' }
+            {
+                label: 'New Note',
+                accelerator: 'CmdOrCtrl+N',
+                click: () => {
+                    mainWindow.webContents.send('createNoteRequest');
+                }
+            }
         ]
     }, {
         label: 'Edit',
