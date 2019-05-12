@@ -5,9 +5,9 @@ export const MarkdownImproved = {
     tokenPostfix: '.md',
 
     // escape codes
-    control: /[\\`*_\[\]{}()#+\-\.!]/,
-    noncontrol: /[^\\`*_\[\]{}()#+\-\.!]/,
-    escapes: /\\(?:[\\`*_\[\]{}()#+\-\.!])/,
+	control: /[\\`*_\[\]{}()#+\-\.!]/,
+	noncontrol: /[^\\`*_\[\]{}()#+\-\.!]/,
+	escapes: /\\(?:@control)/,
 
     // escape codes for javascript/CSS strings
     jsescapes: /\\(?:[btnfr\\"']|[0-7][0-7]?|[0-3][0-7]{2})/,
@@ -19,7 +19,7 @@ export const MarkdownImproved = {
     ],
     tokenizer: {
         root: [
-            [/^#+.*/, 'md.heading'],
+            [/^#+/, 'md.heading'],
             [/^\s*>+.*/, 'md.blockquote'],
             [/^\s*([\*\-+:]|\d+\.)\s/, 'md.list'],
 
@@ -43,22 +43,49 @@ export const MarkdownImproved = {
             [/&\w+;/, 'string.escape'],
             [/@escapes/, 'escape'],
 
-            [/\*\*\*(?:[^\\*]|@escapes)+\*\*\*/, 'md.bolditalic'],
-            [/___(?:[^\\_]|@escapes)+___/, 'md.bolditalic'],
+            [/(?:\*\*\*|___)/, 'md.bolditalic', '@bolditalic'],
+            [/(?:\*\*|__)/, 'md.bold', '@bold'],
+            [/(?:\*|_)/, 'md.italic', '@italic'],
 
-            [/\*\*(?:[^\\*]|@escapes)+\*\*/, 'md.bold'],
-            [/__(?:[^\\_]|@escapes)+__/, 'md.bold'],
-
-            [/\*(?:[^\\*]|@escapes)+\*/, 'md.italic'],
-            [/_(?:[^\\_]|@escapes)+_/, 'md.italic'],
-            
             [/~~(?:[^\\~]|@escapes)+~~/, 'md.strikethrough'],
 
-            [/`(?:[^\\`]|@escapes)+`/, 'md.code.inline'],
+            [/`/, { token: 'md.code.inline', next: '@inlineCode' }],
 
-            [/(!?\[)((?:[^\]]|@escapes)+)(\])([\(\[])((?:[^\)\]]|@escapes)+)([\)\]])/, ['md.link.bracket', 'md.link.text', 'md.link.bracket', 'md.link.bracket', 'md.link.target', 'md.link.bracket']],
-            [/(\[)((?:[^\\_]|@escapes)+)(\])/, ['md.link.bracket', 'md.link.target', 'md.link.bracket']]
+            [/!?\[/, { token: 'md.link.bracket', next: '@linkText' }],
         ],
+
+        bolditalic: [
+            [/`/, { token: 'md.code.inline', next: '@inlineCode' }],
+            [/(?:[^\\*_]|@escapes)/, 'md.bolditalic'],
+            [/(?:\*\*\*|___)/, 'md.bolditalic', '@pop']
+        ],
+        bold: [
+            [/`/, { token: 'md.code.inline', next: '@inlineCode' }],
+            [/(?:[^\\*_]|@escapes)/, 'md.bold'],
+            [/(?:\*\*|__)/, 'md.bold', '@pop']
+        ],
+        italic: [
+            [/`/, { token: 'md.code.inline', next: '@inlineCode' }],
+            [/(?:[^\\*_]|@escapes)/, 'md.italic'],
+            [/(?:\*|_)/, 'md.italic', '@pop']
+        ],
+
+        linkText: [
+            [/`/, { token: 'md.code.inline', next: '@inlineCode' }],
+            [/(?:[^\\\]]|@escapes)/, 'md.link.text'],
+            [/\][\[\(]/, { token: 'md.link.bracket', next: '@linkTarget' }],
+            [/\]/, { token: 'md.link.bracket', next: '@pop' }]
+        ],
+        linkTarget: [
+            [/(?:[^\\\]\)]|@escapes)/, 'md.link.target'],
+            [/[\]\)]/, { token: 'md.link.bracket', next: '@popall' }],
+        ],
+
+        inlineCode: [
+            [/(?:[^\\`]|@escapes)/, 'md.code.inline'],
+            [/`/, { token: 'md.code.inline', next: '@pop' }]
+        ],
+
         html: [
             [/<(\w+)\/>/, 'md.html.tag'],
             [/<(\w+)/, {
@@ -70,7 +97,6 @@ export const MarkdownImproved = {
             [/<\/(\w+)\s*>/, { token: 'md.html.tag' }],
             [/<!--/, 'md.html.comment', '@comment']
         ],
-
         comment: [
             [/[^<\-]+/, 'md.html.comment'],
             [/-->/, 'md.html.comment', '@pop'],

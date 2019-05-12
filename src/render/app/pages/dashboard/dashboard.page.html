@@ -1,4 +1,4 @@
-<div class="container" [class.blur]="showModal">
+<div class="container" [class.darken]="showModal">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
         <as-split-area size="220" class="tree-pane">
             <div class="toolbar">
@@ -23,7 +23,9 @@
     <div class="background" (click)="dismissModal()"></div>
     <div class="content">
         <form [formGroup]="form" (submit)="createNote()">
-            <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus />
+            <div class="input-container">
+                <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus />
+            </div>
         </form>
     </div>
 </div>

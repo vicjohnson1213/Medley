@@ -67,17 +67,15 @@ function registerIPC() {
         fs.mkdir(dirname, { recursive: true })
             .then(() => {
                 return fs.writeFile(filePath, '', { flag: 'wx' });
+            }).catch((err) => {
+                return fs.writeFile(filePath, '', { flag: 'wx' });
             }).then(() => {
                 mainWindow.webContents.send('noteCreated', {
                     Name: name,
                     Path: filePath
                 })
                 getNotes();
-            }).catch((err) => {
-                console.error(err)
-                mainWindow.webContents.send('errorCreatingNote')
             });
-        
     });
 }
 

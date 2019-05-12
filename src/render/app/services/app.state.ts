@@ -1,29 +1,8 @@
 import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { IpcRenderer } from 'electron';
-import { Note } from '../models';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
-const notes: Note[] = [{
-    Name: 'First',
-    Path: 'path/first',
-    Children: [{
-        Name: 'Second',
-        Path: 'path/second',
-        Children: [{
-            Name: 'Third',
-            Path: 'path/third'
-        }]
-    }, {
-        Name: 'Fourth',
-        Path: 'path/fourth'
-    }, {
-        Name: 'Fifth',
-        Path: 'path/fifth'
-    }]
-}, {
-    Name: 'Other',
-    Path: 'path/other'
-}];
+import { Note } from '../models';
 
 @Injectable()
 export class AppState {
@@ -43,7 +22,6 @@ export class AppState {
 
         this.ipc.on('getNotesResponse', (events, tree) => {
             this.zone.run(() => {
-                notes.push({ Name: 'new', Path: `new x ${notes.length}`});
                 this.notesSub$.next(tree);
             });
         });

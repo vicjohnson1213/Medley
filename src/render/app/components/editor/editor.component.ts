@@ -69,7 +69,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         });
 
         this.valueSubscription = this.form.get('content').valueChanges.pipe(
-            debounceTime(1000),
+            debounceTime(500),
             distinctUntilChanged()
         ).subscribe(value => {
             console.log('saving');

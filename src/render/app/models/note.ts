@@ -6,4 +6,5 @@ export interface Note {
     Path: string;
     Children?: Note[];
     Expanded?: boolean;
+    IsFile: boolean;
 }

@@ -1,4 +1,4 @@
-<div class="group" *ngFor="let note of notes">
+<div class="group" *ngFor="let note of (notes | sortTree)">
     <div class="tree-node no-select" (click)="click(note)">
         <!-- <i class="material-icons" *ngIf="note.Children">
             <ng-container *ngIf="note.Expanded">folder_open</ng-container>

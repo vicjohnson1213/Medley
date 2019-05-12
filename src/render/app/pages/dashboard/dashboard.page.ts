@@ -59,6 +59,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     createNote() {
         const name = this.form.value.name;
         this.state.createNote(name);
+        this.form.reset();
         this.showModal = false;
     }
 

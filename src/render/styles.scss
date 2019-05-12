@@ -10,6 +10,10 @@ body {
     background-color: black;
 }
 
+.no-select {
+    user-select: none;
+}
+
 .toolbar {
     height: 48px;
     display: flex;
@@ -71,6 +75,65 @@ body {
     }
 }
 
-.no-select {
-    user-select: none;
+.modal {
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+
+        background-color: white;
+        padding: 16px;
+        border-radius: 4px;
+
+        label {
+            display: block;
+
+            & + input[type="text"] {
+                margin-top: 4px;
+            }
+        }
+
+        .input-container {
+            position: relative;
+            &::before { 
+                content: " ";
+                background: linear-gradient( 135deg, #FD6585 10%, #0D25B9 100%);
+                color: red;
+                font-weight: bold;
+                position: absolute;
+                height: 2px;
+                left: 0;
+                right: 0;
+                bottom: -5px;
+                display: block;
+            }
+        }
+
+        input[type="text"] {
+            display: block;
+            border: none;
+            padding: 8px 0px;
+            width: 100%;
+            font-size: 16px;
+
+            &::placeholder {
+                color: #CCCCCC;
+            }
+
+            &:focus {
+                outline: none;
+                border-color: tomato;
+            }
+        }
+    }
 }

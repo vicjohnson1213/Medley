@@ -23,15 +23,15 @@ function buildTreeP(dir) {
                         .map(f => buildTreeP(f));
 
                     Promise.all(children).then(resoloved => {
-                        resoloved = resoloved.sort((left, right) => {
-                            if (left.IsFile && !right.IsFile) {
-                                return 1;
-                            } else if (!left.IsFile && right.IsFile) {
-                                return -1;
-                            }
+                        // resoloved = resoloved.sort((left, right) => {
+                        //     if (left.IsFile && !right.IsFile) {
+                        //         return 1;
+                        //     } else if (!left.IsFile && right.IsFile) {
+                        //         return -1;
+                        //     }
 
-                            return left.Name > right.Name ? 1 : -1;
-                        });
+                        //     return left.Name > right.Name ? 1 : -1;
+                        // });
 
                         res({
                             Name: path.basename(dir),
