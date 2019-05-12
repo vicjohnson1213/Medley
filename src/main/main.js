@@ -21,7 +21,10 @@ function createMainWindow() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        title: 'Markdown Editor'
+        title: 'Markdown Editor',
+        webPreferences: {
+            nodeIntegration: true
+        }
     });
 
     mainWindow.loadURL(url.format({

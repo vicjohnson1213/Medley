@@ -3,9 +3,7 @@ const path = require('path');
 
 function buildTree(dir) {
     return new Promise((res, rej) => {
-        fs.readdir(dir)
-            .then(files => Promise.all(files.map(f => path.join(dir, f)).map(buildTreeP)))
-            .then(res);
+        buildTreeP(dir).then(tree => res(tree.Children));
     });
 }
 
@@ -15,7 +13,8 @@ function buildTreeP(dir) {
             if (stats.isFile()) {
                 res({
                     Name: path.basename(dir, '.md'),
-                    Path: dir
+                    Path: dir,
+                    IsFile: true
                 });
             } else if (stats.isDirectory()) {
                 fs.readdir(dir).then(files => {
@@ -24,9 +23,20 @@ function buildTreeP(dir) {
                         .map(f => buildTreeP(f));
 
                     Promise.all(children).then(resoloved => {
+                        resoloved = resoloved.sort((left, right) => {
+                            if (left.IsFile && !right.IsFile) {
+                                return 1;
+                            } else if (!left.IsFile && right.IsFile) {
+                                return -1;
+                            }
+
+                            return left.Name > right.Name ? 1 : -1;
+                        });
+
                         res({
                             Name: path.basename(dir),
                             Path: dir,
+                            IsFile: false,
                             Children: resoloved
                         });
                     });
