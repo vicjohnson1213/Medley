@@ -5,23 +5,21 @@
             <div class="toolbar">
                 Groups
             </div>
-            <div class="content">
-                <md-note-tree [notes]="notes" (select)="selectGroup($event)"></md-note-tree>
-            </div>
+            <div class="tag" *ngFor="let tag of (tags | alphabetical)" (click)="selectTag(tag)">{{ tag }}</div>
+            <!-- <md-note-tree [notes]="notes" (select)="selectGroup($event)"></md-note-tree> -->
         </as-split-area>
 
         <as-split-area size="220" class="notes-pane">
             <div class="toolbar">
                 Notes
             </div>
-            <div class="content" *ngIf="selectedGroup">
-                <div class="note" *ngFor="let note of (selectedGroup.Children | isFile)" (click)="selectNote(note)">{{ note.Name }}</div>
-            </div>
+            <div class="note" *ngFor="let note of notesToDisplay" (click)="selectNote(note)">{{ note.Name }}</div>
+            <!-- <div class="note" *ngFor="let note of (selectedGroup.Children | isFile)" (click)="selectNote(note)">{{ note.Name }}</div> -->
         </as-split-area>
 
         <as-split-area size="*" class="editor-pane">
             <div class="toolbar">
-                <div class="title">{{ (activeNote$ | async)?.Name }}</div>
+                <div class="title">{{ activeNote?.Name }}</div>
                 <!-- <div class="button-group">
                     <button class="active" (click)="setMode()"><i class="material-icons">edit</i></button>
                     <button (click)="setMode()"><i class="material-icons">photo</i></button>

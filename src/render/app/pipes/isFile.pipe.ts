@@ -4,10 +4,11 @@ import { Note } from '../models';
 @Pipe({ name: 'isFile' })
 export class IsFilePipe implements PipeTransform {
     transform(notes: Note[]) {
-        if (!notes) {
-            return notes;
-        }
+        return notes;
+        // if (!notes) {
+        //     return notes;
+        // }
 
-        return notes.filter(n => n.IsFile);
+        // return notes.filter(n => n.IsFile);
     }
 }

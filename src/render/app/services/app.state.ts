@@ -11,9 +11,6 @@ export class AppState {
     private activeNoteSub$ = new BehaviorSubject<Note>(null);
     activeNote$ = this.activeNoteSub$.asObservable();
 
-    private selectedGroupSub$ = new BehaviorSubject<Note>(null);
-    selectedGroup$ = this.selectedGroupSub$.asObservable();
-
     private notesSub$ = new BehaviorSubject<Note[]>([]);
     notes$ = this.notesSub$.asObservable();
 
@@ -21,11 +18,10 @@ export class AppState {
 
     constructor(private zone: NgZone) {
         this.ipc = (<any>window).require('electron').ipcRenderer;
-        this.initNotes();
 
-        this.ipc.on('getNotesResponse', (events, tree) => {
+        this.ipc.on('getNotesResponse', (events, notes) => {
             this.zone.run(() => {
-                this.notesSub$.next(tree);
+                this.notesSub$.next(notes);
             });
         });
 
@@ -43,10 +39,10 @@ export class AppState {
 
         this.ipc.on('noteCreated', (event, note) => {
             this.zone.run(() => {
+                const notes = this.notesSub$.value;
+                notes.push(note);
+                this.notesSub$.next(notes);
                 this.activeNoteSub$.next(note);
-                const selectedGroup = this.selectedGroupSub$.value;
-                selectedGroup.Children.push(note);
-                this.selectedGroupSub$.next(selectedGroup);
             });
         });
     }
@@ -57,15 +53,15 @@ export class AppState {
     }
 
     setSelectedGroup(note: Note) {
-        this.selectedGroupSub$.next(note);
+        // this.selectedGroupSub$.next(note);
     }
 
     saveNote(note: Note) {
         this.ipc.send('saveNote', note);
     }
 
-    createNote(name: string, parent?: string) {
-        this.ipc.send('createNoteRequest', name, parent);
+    createNote(name: string) {
+        this.ipc.send('createNoteRequest', name);
     }
 
     initNotes() {

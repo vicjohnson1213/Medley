@@ -1,11 +1,14 @@
-const { app, BrowserWindow, Menu, ipcMain, shell, globalShortcut } = require('electron');
+
+const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs').promises;
 
-const utils = require('./utils');
+const MDEDIT_DIR = path.join(process.env.HOME, '.mdedit');
+const NOTES_DIR = path.join(MDEDIT_DIR, 'notes');
+const MANIFEST_FILE = path.join(MDEDIT_DIR, 'manifest.json');
 
-const NOTE_DIR = path.join(process.env.HOME, '.mdedit');
+const utils = require('./utils');
 
 let mainWindow;
 
@@ -60,28 +63,45 @@ function registerIPC() {
         fs.writeFile(note.Path, note.Content);
     });
 
-    ipcMain.on('createNoteRequest', (event, name, parent) => {
-        const fullName = path.extname(name) === '.md' ? name : `${name}.md`;
-        const filePath = parent ? path.join(parent, fullName) : path.join(NOTE_DIR, fullName);
-        const dirname = path.dirname(filePath);
-        fs.mkdir(dirname, { recursive: true })
+    ipcMain.on('createNoteRequest', (event, name) => {
+        const manifest = require(MANIFEST_FILE);
+
+        const parts = name.split('/');
+        const noteName = parts.pop();
+        const tag = parts.join('/');
+        const fullName = path.extname(noteName) === '.md' ? noteName : `${noteName}.md`;
+        const filepath = path.join(NOTES_DIR, fullName);
+        
+        manifest.Notes.push({
+            Name: noteName,
+            Path: filepath,
+            Tags: [tag]
+        });
+
+        fs.writeFile(filepath, `# ${noteName}`, { flag: 'wx'})
             .then(() => {
-                return fs.writeFile(filePath, '', { flag: 'wx' });
-            }).catch((err) => {
-                return fs.writeFile(filePath, '', { flag: 'wx' });
-            }).then(() => {
                 mainWindow.webContents.send('noteCreated', {
-                    Name: name,
-                    Path: filePath
-                })
-                // getNotes();
+                    Name: noteName,
+                    Path: filepath,
+                    Tags: [tag]
+                });
+
+                return fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
             });
     });
 }
 
 function getNotes() {
-    utils.buildTree(NOTE_DIR)
-            .then((tree) => mainWindow.webContents.send('getNotesResponse', tree));
+    const manifest = require(MANIFEST_FILE);
+    const notes = manifest.Notes.map(note => {
+        return {
+            Name: path.basename(note.Path, '.md'),
+            Path: note.Path,
+            Tags: note.Tags
+        }
+    });
+
+    mainWindow.webContents.send('getNotesResponse', notes);
 }
 
 function createMenu() {

@@ -1,10 +1,10 @@
 import { SortTreePipe } from './sortTree.pipe';
-import { IsFilePipe } from './isFile.pipe';
+import { AlphabeticalPipe } from './alphabetical.pipe';
 
 export const pipes = [
     SortTreePipe,
-    IsFilePipe
+    AlphabeticalPipe
 ];
 
 export * from './sortTree.pipe';
-export * from './isFile.pipe';
+export * from './alphabetical.pipe';

@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SplitComponent } from 'angular-split';
 import { Observable, Subscription } from 'rxjs';
 
+import { EditorComponent } from '../../components/editor/editor.component';
 import { AppState } from '../../services';
 import { Note } from '../../models';
 
@@ -16,6 +17,7 @@ import { Note } from '../../models';
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
     @ViewChild(SplitComponent) splitEl: SplitComponent;
+    @ViewChild(EditorComponent) editor: EditorComponent;
     @ViewChild('nameInput') nameInput: ElementRef;
 
     form: FormGroup;
@@ -30,7 +32,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     resize$ = this.resizeEmitter.asObservable();
 
     notes: Note[];
-    selectedGroup: Note;
+    tags: string[];
+    selectedTag: string;
     activeNote: Note;
     showModal = false;
 
@@ -40,12 +43,18 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         private state: AppState) {}
 
     ngOnInit() {
-        this.notesSubscription = this.state.notes$.subscribe(notes => this.notes = notes);
-        this.activeNoteSubscription = this.state.activeNote$.subscribe(note => this.activeNote = note);
-        this.selectedGroupSubscription = this.state.selectedGroup$.subscribe(note => this.selectedGroup = note);
-
         this.form = this.fb.group({
             name: ['', Validators.required]
+        });
+
+        this.activeNoteSubscription = this.state.activeNote$.subscribe(note => {
+            this.activeNote = note;
+            this.editor.focus();
+        });
+
+        this.notesSubscription = this.state.notes$.subscribe(notes => {
+            this.notes = notes;
+            this.tags = this.createTags(this.notes);
         });
 
         this.onDragSubscription = this.splitEl.dragProgress$.subscribe(() => {
@@ -58,6 +67,24 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
                 setTimeout(() => this.nameInput.nativeElement.focus());
             });
         });
+
+        this.state.initNotes();
+    }
+
+    createTags(notes) {
+        const tags = [];
+        const parts = notes.map(n => n.Tags)
+            .reduce((p, c) => p.concat(c), [])
+            .map(t => t.split('/'));
+
+        parts.forEach(p => p.reduce((prev, curr) => {
+            const joined = prev ? `${prev}/${curr}` : curr;
+            tags.push(joined);
+            return joined;
+        }, ''));
+
+        const uniq = [...new Set(tags)];
+        return uniq;
     }
 
     ngOnDestroy() {
@@ -65,7 +92,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.creationSubscription.unsubscribe();
         this.notesSubscription.unsubscribe();
         this.activeNoteSubscription.unsubscribe();
-        this.selectedGroupSubscription.unsubscribe();
+    }
+
+    get notesToDisplay(): Note[] {
+        return this.notes.filter(n => n.Tags.some(t => t.startsWith(this.selectedTag)));
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -74,7 +104,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     createNote() {
         const name = this.form.value.name;
-        this.state.createNote(name, this.selectedGroup.Path);
+        this.state.createNote(name);
         this.form.reset();
         this.showModal = false;
     }
@@ -91,7 +121,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.state.setActiveNote(note);
     }
 
-    selectGroup(note: Note) {
-        this.state.setSelectedGroup(note);
+    selectTag(tag: string) {
+        this.selectedTag = tag;
     }
 }

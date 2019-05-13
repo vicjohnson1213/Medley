@@ -1,9 +1,9 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
-import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Observable, combineLatest, Subscription } from 'rxjs';
-import { filter, debounceTime, tap, switchMap, take, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { EditorComponent as MonacoEditorComponent } from '../monaco-editor/monaco-editor.component';
 import { AppState } from '../../services';
 import { Note } from '../../models';
 
@@ -14,6 +14,7 @@ import { Note } from '../../models';
 })
 export class EditorComponent implements OnInit, OnDestroy {
     @Input() resize$: Observable<void>;
+    @ViewChild(MonacoEditorComponent) monacoEditor: MonacoEditorComponent;
 
     private noteSubscription: Subscription;
     private valueSubscription: Subscription;
@@ -60,7 +61,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private zone: NgZone,
         private state: AppState) {}
 
     ngOnInit() {
@@ -72,7 +72,6 @@ export class EditorComponent implements OnInit, OnDestroy {
             debounceTime(500),
             distinctUntilChanged()
         ).subscribe(value => {
-            console.log('saving');
             this.note.Content = value;
             this.state.saveNote(this.note);
         });
@@ -90,5 +89,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.noteSubscription.unsubscribe();
         this.valueSubscription.unsubscribe();
+    }
+
+    focus() {
+        this.monacoEditor.focus();
     }
 }

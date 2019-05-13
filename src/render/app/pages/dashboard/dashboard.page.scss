@@ -14,29 +14,39 @@
 }
 
 as-split-area {
-    .content {
-        padding: 8px;
-    }
-
     &.tree-pane {
         z-index: 1;
         background-color: #222222;
         color: #F0F0F0;
 
         .toolbar {
-            background-color: transparent;
+            background-color: #111111;
+        }
+
+        .tag {
+            padding: 4px 8px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: tomato;
+            }
         }
     }
 
     &.notes-pane {
         background-color: #e8e8e8;
 
-        .note:hover {
-            cursor: pointer;
+        .toolbar {
+            background-color: #AAAAAA;
         }
 
-        .note + .note {
-            margin-top: 16px;
+        .note {
+            padding: 4px 8px;
+
+            &:hover {
+                background-color: tomato;
+                cursor: pointer;
+            }
         }
     }
 

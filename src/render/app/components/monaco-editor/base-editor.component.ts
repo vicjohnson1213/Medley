@@ -24,13 +24,13 @@ export abstract class BaseEditor implements AfterViewInit, OnDestroy {
 
     constructor(private config: NgxMonacoEditorConfig) { }
 
+    protected abstract initMonaco(options: any): void;
+
     ngAfterViewInit(): void {
         (<any>window).amdRequire(['vs/editor/editor.main'], () => {
             this.initMonaco(this.options);
         });
     }
-
-    protected abstract initMonaco(options: any): void;
 
     ngOnDestroy() {
         if (this._windowResizeSubscription) {
@@ -39,6 +39,12 @@ export abstract class BaseEditor implements AfterViewInit, OnDestroy {
         if (this._editor) {
             this._editor.dispose();
             this._editor = undefined;
+        }
+    }
+
+    focus() {
+        if (this._editor) {
+            this._editor.focus();
         }
     }
 }
