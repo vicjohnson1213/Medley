@@ -74,7 +74,7 @@ function registerIPC() {
                     Name: name,
                     Path: filePath
                 })
-                getNotes();
+                // getNotes();
             });
     });
 }

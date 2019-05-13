@@ -11,6 +11,9 @@ export class AppState {
     private activeNoteSub$ = new BehaviorSubject<Note>(null);
     activeNote$ = this.activeNoteSub$.asObservable();
 
+    private selectedGroupSub$ = new BehaviorSubject<Note>(null);
+    selectedGroup$ = this.selectedGroupSub$.asObservable();
+
     private notesSub$ = new BehaviorSubject<Note[]>([]);
     notes$ = this.notesSub$.asObservable();
 
@@ -39,13 +42,22 @@ export class AppState {
         });
 
         this.ipc.on('noteCreated', (event, note) => {
-            this.activeNoteSub$.next(note);
+            this.zone.run(() => {
+                this.activeNoteSub$.next(note);
+                const selectedGroup = this.selectedGroupSub$.value;
+                selectedGroup.Children.push(note);
+                this.selectedGroupSub$.next(selectedGroup);
+            });
         });
     }
 
     setActiveNote(note: Note) {
         this.activeNoteSub$.next(note);
         this.ipc.send('loadNote', note.Path);
+    }
+
+    setSelectedGroup(note: Note) {
+        this.selectedGroupSub$.next(note);
     }
 
     saveNote(note: Note) {

@@ -18,7 +18,7 @@ export const LightTheme: monaco.editor.IStandaloneThemeData = { base: 'vs',
         'editor.foreground': '#4D4D4C',
         'editor.background': '#F5F5F5',
         'editor.selectionBackground': '#00000010',
-        'editor.lineHighlightBackground': '#00000007',
+        'editor.lineHighlightBackground': '#00000004',
         'editorCursor.foreground': '#AEAFAD',
         'editorWhitespace.foreground': '#D1D1D1' }, 
     rules: [

@@ -1,14 +1,27 @@
 <div class="container" [class.darken]="showModal">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
+
         <as-split-area size="220" class="tree-pane">
             <div class="toolbar">
-                Your notes
+                Groups
             </div>
-            <md-note-tree [notes]="notes$ | async" (select)="selectNote($event)"></md-note-tree>
+            <div class="content">
+                <md-note-tree [notes]="notes" (select)="selectGroup($event)"></md-note-tree>
+            </div>
         </as-split-area>
+
+        <as-split-area size="220" class="notes-pane">
+            <div class="toolbar">
+                Notes
+            </div>
+            <div class="content" *ngIf="selectedGroup">
+                <div class="note" *ngFor="let note of (selectedGroup.Children | isFile)" (click)="selectNote(note)">{{ note.Name }}</div>
+            </div>
+        </as-split-area>
+
         <as-split-area size="*" class="editor-pane">
             <div class="toolbar">
-                {{ (activeNote$ | async)?.Name }}
+                <div class="title">{{ (activeNote$ | async)?.Name }}</div>
                 <!-- <div class="button-group">
                     <button class="active" (click)="setMode()"><i class="material-icons">edit</i></button>
                     <button (click)="setMode()"><i class="material-icons">photo</i></button>
@@ -24,7 +37,7 @@
     <div class="content">
         <form [formGroup]="form" (submit)="createNote()">
             <div class="input-container">
-                <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus />
+                <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
             </div>
         </form>
     </div>

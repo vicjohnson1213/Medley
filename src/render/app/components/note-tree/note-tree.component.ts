@@ -14,9 +14,9 @@ export class NoteTreeComponent {
     @Output() select = new EventEmitter<Note>();
 
     click(note: Note) {
-        if (note && note.Children) {
-            return note.Expanded = !note.Expanded;
-        }
+        // if (note && note.Children) {
+        //     return note.Expanded = !note.Expanded;
+        // }
 
         this.select.emit(note);
     }

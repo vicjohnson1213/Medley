@@ -14,7 +14,12 @@
 }
 
 as-split-area {
+    .content {
+        padding: 8px;
+    }
+
     &.tree-pane {
+        z-index: 1;
         background-color: #222222;
         color: #F0F0F0;
 
@@ -23,17 +28,35 @@ as-split-area {
         }
     }
 
+    &.notes-pane {
+        background-color: #e8e8e8;
+
+        .note:hover {
+            cursor: pointer;
+        }
+
+        .note + .note {
+            margin-top: 16px;
+        }
+    }
+
     &.editor-pane {
         overflow-y: hidden;
         display: flex;
         flex-direction: column;
 
-        background-color: white;
+        background-color: #F5F5F5;
 
         .toolbar {
+            z-index: 1;
             flex: 0 1 auto;
             background-color: #444444;
             color: #F0F0F0;
+
+            .title {
+                font-weight: bold;
+            }
+
             button {
                 &:not(.active) {
                     background-color: #666666;
@@ -43,8 +66,8 @@ as-split-area {
         }
 
         md-editor {
-            margin-top: 2px;
-            margin-left: 4px;
+            margin-top: 4px;
+            margin-left: 8px;
             flex: 1 1 auto;
         }
     }
@@ -62,8 +85,4 @@ as-split-area {
     width: 5px !important;
     left: -2px;
     right: 2px;
-}
-
-md-note-tree {
-    margin-left: 8px;
 }
