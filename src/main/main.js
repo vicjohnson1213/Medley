@@ -26,8 +26,8 @@ app.on('activate', () => {
 
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 700,
         title: 'Markdown Editor',
         webPreferences: {
             nodeIntegration: true
