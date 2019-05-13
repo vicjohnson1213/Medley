@@ -2,29 +2,25 @@
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
 
         <as-split-area size="220" class="tree-pane">
-            <div class="toolbar">
-                Groups
+            <div class="toolbar">Groups</div>
+            <div class="tag" [class.active]="selectedTag === '_All'" (click)="selectTag('_All')">
+                <i class="material-icons">label</i>All notes <div class="count">{{ notesForTag('_All').length }}</div>
             </div>
-            <div class="tag" *ngFor="let tag of (tags | alphabetical)" (click)="selectTag(tag)">{{ tag }}</div>
-            <!-- <md-note-tree [notes]="notes" (select)="selectGroup($event)"></md-note-tree> -->
+            <div class="tag" [class.active]="selectedTag === tag" [style.padding-left]="padTag(tag)" *ngFor="let tag of (tags | alphabeticalBy)" (click)="selectTag(tag)">
+                <i class="material-icons">label</i>{{ cleanTag(tag) }} <div class="count">{{ notesForTag(tag).length }}</div>
+            </div>
+            <div class="tag" [class.active]="selectedTag === '_Untagged'" (click)="selectTag('_Untagged')">
+                    <i class="material-icons">label</i>Untagged <div class="count">{{ notesForTag('_Untagged').length }}</div>
+            </div>
         </as-split-area>
 
         <as-split-area size="220" class="notes-pane">
-            <div class="toolbar">
-                Notes
-            </div>
-            <div class="note" *ngFor="let note of notesToDisplay" (click)="selectNote(note)">{{ note.Name }}</div>
-            <!-- <div class="note" *ngFor="let note of (selectedGroup.Children | isFile)" (click)="selectNote(note)">{{ note.Name }}</div> -->
+            <div class="toolbar">Notes</div>
+            <div class="note" [class.active]="note === activeNote" *ngFor="let note of (notesToDisplay | alphabeticalBy:'Name')" (click)="selectNote(note)">{{ note.Name }}</div>
         </as-split-area>
 
         <as-split-area size="*" class="editor-pane">
-            <div class="toolbar">
-                <div class="title">{{ activeNote?.Name }}</div>
-                <!-- <div class="button-group">
-                    <button class="active" (click)="setMode()"><i class="material-icons">edit</i></button>
-                    <button (click)="setMode()"><i class="material-icons">photo</i></button>
-                </div> -->
-            </div>
+            <div class="toolbar"><div class="title">{{ activeNote?.Name }}</div></div>
             <md-editor [resize$]="resize$"></md-editor>
         </as-split-area>
     </as-split>
@@ -34,9 +30,7 @@
     <div class="background" (click)="dismissModal()"></div>
     <div class="content">
         <form [formGroup]="form" (submit)="createNote()">
-            <div class="input-container">
-                <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
-            </div>
+            <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
         </form>
     </div>
 </div>

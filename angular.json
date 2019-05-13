@@ -30,6 +30,11 @@
             "styles": [
               "src/render/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/render/styles/"
+              ]
+            },
             "scripts": []
           },
           "configurations": {
@@ -86,6 +91,11 @@
             "styles": [
               "src/render/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/render/styles/"
+              ]
+            },
             "scripts": [],
             "assets": [
               "src/render/favicon.ico",

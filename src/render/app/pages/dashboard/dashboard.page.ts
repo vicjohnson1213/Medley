@@ -24,7 +24,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     private notesSubscription: Subscription;
     private activeNoteSubscription: Subscription;
-    private selectedGroupSubscription: Subscription;
+    private selectedTagSubscription: Subscription;
     private creationSubscription: Subscription;
     private onDragSubscription: Subscription;
 
@@ -52,7 +52,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
             this.editor.focus();
         });
 
+        this.selectedTagSubscription = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
+
         this.notesSubscription = this.state.notes$.subscribe(notes => {
+            console.log(notes);
             this.notes = notes;
             this.tags = this.createTags(this.notes);
         });
@@ -92,10 +95,23 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.creationSubscription.unsubscribe();
         this.notesSubscription.unsubscribe();
         this.activeNoteSubscription.unsubscribe();
+        this.selectedTagSubscription.unsubscribe();
     }
 
     get notesToDisplay(): Note[] {
-        return this.notes.filter(n => n.Tags.some(t => t.startsWith(this.selectedTag)));
+        return this.notesForTag();
+    }
+
+    notesForTag(tag?: string) {
+        tag = tag || this.selectedTag;
+
+        if (tag === '_All') {
+            return this.notes;
+        } else if (tag === '_Untagged') {
+            return this.notes.filter(n => n.Tags.length === 0);
+        }
+
+        return this.notes.filter(n => n.Tags.some(t => t.startsWith(tag)));
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -122,6 +138,20 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
 
     selectTag(tag: string) {
-        this.selectedTag = tag;
+        this.state.setSelectedTag(tag);
+    }
+
+    cleanTag(tag: string) {
+        return tag.replace(/(?:[^\/]+\/)+/, '');
+    }
+
+    padTag(tag: string) {
+        const search = /[^\/]+\//g;
+        let matches = 0;
+        while (search.exec(tag)) {
+            matches++;
+        }
+
+        return `${(matches * 16) + 16}px`;
     }
 }

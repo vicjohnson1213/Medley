@@ -27,6 +27,10 @@ export const MarkdownImproved = {
             [/^\s*```\s*((?:\w|[\/\-#])+).*$/, { token: 'md.code.block', next: '@codeblockGithub', nextEmbedded: '$1' }],
             [/^\s*```\s*$/, { token: 'md.code.block', next: '@codeblock' }],
 
+            [/^\-\-\-/, 'md.hr'],
+            [/^___/, 'md.hr'],
+            [/^\*\*\*/, 'md.hr'],
+
             { include: '@lineContent' },
             { include: 'html' },
         ],

@@ -2,13 +2,17 @@
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const url = require('url');
+const crypto = require('crypto');
 const fs = require('fs').promises;
+
+function requireUncached(module) {
+    delete require.cache[require.resolve(module)];
+    return require(module);
+}
 
 const MDEDIT_DIR = path.join(process.env.HOME, '.mdedit');
 const NOTES_DIR = path.join(MDEDIT_DIR, 'notes');
 const MANIFEST_FILE = path.join(MDEDIT_DIR, 'manifest.json');
-
-const utils = require('./utils');
 
 let mainWindow;
 
@@ -64,18 +68,19 @@ function registerIPC() {
     });
 
     ipcMain.on('createNoteRequest', (event, name) => {
-        const manifest = require(MANIFEST_FILE);
+        const manifest = requireUncached(MANIFEST_FILE);
 
         const parts = name.split('/');
         const noteName = parts.pop();
         const tag = parts.join('/');
-        const fullName = path.extname(noteName) === '.md' ? noteName : `${noteName}.md`;
+        const filename = crypto.randomBytes(16).toString('hex');
+        const fullName = `${filename}.md`;
         const filepath = path.join(NOTES_DIR, fullName);
-        
+
         manifest.Notes.push({
             Name: noteName,
             Path: filepath,
-            Tags: [tag]
+            Tags: tag ? [tag] : []
         });
 
         fs.writeFile(filepath, `# ${noteName}`, { flag: 'wx'})
@@ -92,10 +97,10 @@ function registerIPC() {
 }
 
 function getNotes() {
-    const manifest = require(MANIFEST_FILE);
+    const manifest = requireUncached(MANIFEST_FILE);
     const notes = manifest.Notes.map(note => {
         return {
-            Name: path.basename(note.Path, '.md'),
+            Name: note.Name,
             Path: note.Path,
             Tags: note.Tags
         }

@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'variables';
 
 * {
     box-sizing: border-box;
@@ -7,72 +7,11 @@
 body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
-    background-color: black;
+    background-color: $black;
 }
 
 .no-select {
     user-select: none;
-}
-
-.toolbar {
-    height: 48px;
-    display: flex;
-    align-items: center;
-
-    padding: 8px;
-
-    .button-group {
-        display: inline-block;
-
-        button {
-            &:not(.active) {
-                &:hover {
-                    cursor: default;
-                }
-            }
-
-            border-radius: 0;
-
-            &:first-child {
-                border-bottom-left-radius: 4px;
-                border-bottom-right-radius: 0px;
-                border-top-right-radius: 0px;
-                border-top-left-radius: 4px;
-            }
-            &:last-child {
-                border-bottom-left-radius: 0px;
-                border-bottom-right-radius: 4px;
-                border-top-right-radius: 4px;
-                border-top-left-radius: 0px;
-            }
-            & + button {
-                margin-left: 1px;
-            }
-        }
-    }
-
-    button + button,
-    button + .button-group,
-    .button-group + button {
-        margin-left: 8px;
-    }
-
-    button {
-        i {
-            vertical-align: middle;
-        }
-
-        border-radius: 4px;
-        border: none;
-        
-        &:hover {
-            cursor: pointer;
-        }
-
-        &:focus {
-            outline: none;
-        }
-    }
 }
 
 .modal {
@@ -91,48 +30,25 @@ body {
         transform: translate(-50%, -50%);
         width: 400px;
 
-        background-color: white;
+        background-color: $white;
         padding: 16px;
         border-radius: 4px;
 
-        label {
-            display: block;
-
-            & + input[type="text"] {
-                margin-top: 4px;
-            }
-        }
-
-        .input-container {
-            position: relative;
-            &::before { 
-                content: " ";
-                background: linear-gradient( 135deg, #FD6585 10%, #0D25B9 100%);
-                color: red;
-                font-weight: bold;
-                position: absolute;
-                height: 2px;
-                left: 0;
-                right: 0;
-                bottom: -5px;
-                display: block;
-            }
-        }
-
         input[type="text"] {
+            background-color: transparent;
             display: block;
             border: none;
+            border-bottom: 2px solid $lightPurple;
             padding: 8px 0px;
             width: 100%;
             font-size: 16px;
 
             &::placeholder {
-                color: #CCCCCC;
+                color: $gray;
             }
 
             &:focus {
                 outline: none;
-                border-color: tomato;
             }
         }
     }

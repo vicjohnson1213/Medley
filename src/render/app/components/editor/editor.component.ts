@@ -50,8 +50,8 @@ export class EditorComponent implements OnInit, OnDestroy {
         occurrencesHighlight: false,
         scrollbar: {
             useShadows: false,
-            horizontalScrollbarSize: 12,
-            verticalScrollbarSize: 12
+            horizontalScrollbarSize: 10,
+            verticalScrollbarSize: 10
         },
         snippetSuggestions: 'none',
         wordBasedSuggestions: false,

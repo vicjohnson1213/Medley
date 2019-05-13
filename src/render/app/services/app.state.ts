@@ -8,6 +8,9 @@ import { Note } from '../models';
 export class AppState {
     private ipc: IpcRenderer;
 
+    private selectedTagSub$ = new BehaviorSubject<string>('_All');
+    selectedTag$ = this.selectedTagSub$.asObservable();
+
     private activeNoteSub$ = new BehaviorSubject<Note>(null);
     activeNote$ = this.activeNoteSub$.asObservable();
 
@@ -43,6 +46,7 @@ export class AppState {
                 notes.push(note);
                 this.notesSub$.next(notes);
                 this.activeNoteSub$.next(note);
+                this.selectedTagSub$.next(note.Tags[0]);
             });
         });
     }
@@ -52,8 +56,8 @@ export class AppState {
         this.ipc.send('loadNote', note.Path);
     }
 
-    setSelectedGroup(note: Note) {
-        // this.selectedGroupSub$.next(note);
+    setSelectedTag(tag: string) {
+        this.selectedTagSub$.next(tag);
     }
 
     saveNote(note: Note) {

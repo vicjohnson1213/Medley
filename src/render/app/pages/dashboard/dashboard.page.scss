@@ -1,11 +1,14 @@
+@import 'variables';
+
 :host {
     display: block;
     position: relative;
 }
 
+$toolbarShadow: 0px 2px 6px -2px $darkerPurple;
+
 .container {
     height: 100vh;
-
     transition: filter 100ms;
 
     &.darken {
@@ -13,38 +16,81 @@
     }
 }
 
+.toolbar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    position: relative;
+    z-index: 10;
+    box-shadow: $toolbarShadow;
+    font-weight: bold;
+    color: $white;
+}
+
 as-split-area {
     &.tree-pane {
-        z-index: 1;
-        background-color: #222222;
-        color: #F0F0F0;
+        z-index: 2;
+        background-color: $darkPurple;
+        color: $white;
+        box-shadow: 1px 4px 5px -1px $darkerPurple;
 
         .toolbar {
-            background-color: #111111;
+            background-color: $darkerPurple;
         }
 
         .tag {
-            padding: 4px 8px;
+            padding: 8px 8px;
+            transition: background-color 100ms;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+
+            i {
+                font-size: 16px;
+                margin-right: 4px;
+                color: $lightPurple;
+            }
+
+            &.active {
+                background-color: $purple;
+            }
 
             &:hover {
                 cursor: pointer;
-                background-color: tomato;
+                background-color: $purple;
+            }
+
+            .count {
+                margin-left: auto;
+                padding-left: 8px;
+                color: $lighterPurple;
             }
         }
     }
 
     &.notes-pane {
-        background-color: #e8e8e8;
+        z-index: 1;
+        background-color: $lightestGray;
+        color: $black;
+        box-shadow: -4px 6px 10px -1px $black;
 
         .toolbar {
-            background-color: #AAAAAA;
+            font-weight: bold;
+            background-color: $darkPurple;
         }
 
         .note {
-            padding: 4px 8px;
+            padding: 8px 8px;
+            transition: background-color 100ms;
+            white-space: nowrap;
+
+            &.active {
+                background-color: $lighterGray;
+            }
 
             &:hover {
-                background-color: tomato;
+                background-color: $lighterGray;
                 cursor: pointer;
             }
         }
@@ -55,28 +101,20 @@ as-split-area {
         display: flex;
         flex-direction: column;
 
-        background-color: #F5F5F5;
+        background-color: $white;
 
         .toolbar {
             z-index: 1;
             flex: 0 1 auto;
-            background-color: #444444;
-            color: #F0F0F0;
+            background-color: $lightPurple;
 
             .title {
                 font-weight: bold;
             }
-
-            button {
-                &:not(.active) {
-                    background-color: #666666;
-                    color: #CCCCCC;
-                }
-            }
         }
 
         md-editor {
-            margin-top: 4px;
+            margin-top: 8px;
             margin-left: 8px;
             flex: 1 1 auto;
         }
@@ -84,6 +122,7 @@ as-split-area {
 }
 
 ::ng-deep .as-split-gutter {
+    z-index: 3;
     background-color: transparent !important;
     position: relative;
     flex-basis: 0px !important;
