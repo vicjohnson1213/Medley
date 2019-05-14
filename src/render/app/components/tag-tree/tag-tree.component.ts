@@ -4,6 +4,7 @@ import { SubSink } from 'subsink';
 import { AppState } from '../../services';
 import { Note } from '../../models';
 import * as utils from '../../utils';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'md-tag-tree',
@@ -26,10 +27,13 @@ export class TagTreeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
-        this.subscriptions.sink = this.state.notes$.subscribe(notes => {
-            this.notes = notes;
-            this.tags = this.createTags(this.notes);
-        });
+        this.subscriptions.sink = this.state.notes$
+            .pipe(
+                distinctUntilChanged()
+            ).subscribe(notes => {
+                this.notes = notes;
+                this.tags = this.createTags(this.notes);
+            });
     }
 
     ngOnDestroy() {

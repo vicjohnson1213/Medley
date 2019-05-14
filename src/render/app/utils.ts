@@ -11,7 +11,7 @@ export function padTag(tag: string) {
         matches++;
     }
 
-    return (matches * 16) + 16;
+    return (matches * 16) + 8;
 }
 
 export function createTags(notes: Note[]) {

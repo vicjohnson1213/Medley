@@ -18,7 +18,7 @@
     </as-split>
 </div>
 
-<md-modal *ngIf="showModal">
+<md-modal *ngIf="showModal" (dismiss)="dismissModal()">
     <form [formGroup]="form" (submit)="createNote()">
         <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
     </form>

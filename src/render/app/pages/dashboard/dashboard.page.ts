@@ -69,7 +69,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        this.showModal = false;
+        this.dismissModal();
     }
 
     get notesToDisplay(): Note[] {

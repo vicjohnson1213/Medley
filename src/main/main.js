@@ -71,31 +71,7 @@ function registerIPC() {
     });
 
     ipcMain.on('createNoteRequest', (event, name) => {
-        const manifest = requireUncached(MANIFEST_FILE);
-
-        const parts = name.split('/');
-        const noteName = parts.pop();
-        const tag = parts.join('/');
-        const filename = crypto.randomBytes(16).toString('hex');
-        const fullName = `${filename}.md`;
-        const filepath = path.join(NOTES_DIR, fullName);
-
-        manifest.Notes.push({
-            Name: noteName,
-            Path: filepath,
-            Tags: tag ? [tag] : []
-        });
-
-        fs.writeFile(filepath, `# ${noteName}`, { flag: 'wx'})
-            .then(() => {
-                mainWindow.webContents.send('noteCreated', {
-                    Name: noteName,
-                    Path: filepath,
-                    Tags: [tag]
-                });
-
-                return fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
-            });
+        createNote(name);
     });
 }
 
@@ -110,4 +86,46 @@ function getNotes() {
     });
 
     mainWindow.webContents.send('getNotesResponse', notes);
+}
+
+function createNote(name, attempt) {
+    attempt = attempt || 0;
+
+    const manifest = requireUncached(MANIFEST_FILE);
+
+    const parts = name.split('/');
+    const noteName = parts.pop();
+    const tag = parts.join('/');
+    const filename = noteName + (attempt > 0 ? ` (${attempt})` : '');
+    const fullName = `${filename}.md`;
+    const filepath = path.join(NOTES_DIR, fullName);
+
+    manifest.Notes.push({
+        Name: noteName,
+        Path: filepath,
+        Tags: tag ? [tag] : []
+    });
+
+    console.log('creating:', {
+        Name: noteName,
+        Path: filepath,
+        Tags: tag ? [tag] : []
+    });
+
+    fs.writeFile(filepath, `# ${noteName}`, { flag: 'wx' })
+        .then(() => {
+            mainWindow.webContents.send('noteCreated', {
+                Name: noteName,
+                Path: filepath,
+                Tags: [tag]
+            });
+
+            return fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+        }).catch(err => {
+            if (err.code === 'EEXIST') {
+                return createNote(name, attempt + 1);
+            }
+
+            console.error(err);
+        });
 }
