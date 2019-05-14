@@ -4,11 +4,12 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SplitComponent } from 'angular-split';
-import { Observable, Subscription } from 'rxjs';
+import { SubSink } from 'subsink';
 
 import { EditorComponent } from '../../components/editor/editor.component';
 import { AppState } from '../../services';
 import { Note } from '../../models';
+import * as utils from '../../utils';
 
 @Component({
     selector: 'note-page-dashboard',
@@ -16,23 +17,18 @@ import { Note } from '../../models';
     styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
+    notesForTag = utils.notesForTag;
+
     @ViewChild(SplitComponent) splitEl: SplitComponent;
     @ViewChild(EditorComponent) editor: EditorComponent;
     @ViewChild('nameInput') nameInput: ElementRef;
 
-    form: FormGroup;
-
-    private notesSubscription: Subscription;
-    private activeNoteSubscription: Subscription;
-    private selectedTagSubscription: Subscription;
-    private creationSubscription: Subscription;
-    private onDragSubscription: Subscription;
-
+    private subscriptions = new SubSink();
     private resizeEmitter = new EventEmitter();
     resize$ = this.resizeEmitter.asObservable();
 
+    form: FormGroup;
     notes: Note[];
-    tags: string[];
     selectedTag: string;
     activeNote: Note;
     showModal = false;
@@ -47,24 +43,18 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
             name: ['', Validators.required]
         });
 
-        this.activeNoteSubscription = this.state.activeNote$.subscribe(note => {
+        this.subscriptions.sink = this.splitEl.dragProgress$.subscribe(() => this.zone.run(() => this.resizeEmitter.emit()));
+        this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
+        this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             this.activeNote = note;
             this.editor.focus();
         });
 
-        this.selectedTagSubscription = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
-
-        this.notesSubscription = this.state.notes$.subscribe(notes => {
-            console.log(notes);
+        this.subscriptions.sink = this.state.notes$.subscribe(notes => {
             this.notes = notes;
-            this.tags = this.createTags(this.notes);
         });
 
-        this.onDragSubscription = this.splitEl.dragProgress$.subscribe(() => {
-            this.zone.run(() => this.resizeEmitter.emit());
-        });
-
-        this.creationSubscription = this.state.createNoteRequest.subscribe(() => {
+        this.subscriptions.sink = this.state.createNoteRequest.subscribe(() => {
             this.zone.run(() => {
                 this.showModal = true;
                 setTimeout(() => this.nameInput.nativeElement.focus());
@@ -74,48 +64,16 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.state.initNotes();
     }
 
-    createTags(notes) {
-        const tags = [];
-        const parts = notes.map(n => n.Tags)
-            .reduce((p, c) => p.concat(c), [])
-            .map(t => t.split('/'));
-
-        parts.forEach(p => p.reduce((prev, curr) => {
-            const joined = prev ? `${prev}/${curr}` : curr;
-            tags.push(joined);
-            return joined;
-        }, ''));
-
-        const uniq = [...new Set(tags)];
-        return uniq;
-    }
-
     ngOnDestroy() {
-        this.onDragSubscription.unsubscribe();
-        this.creationSubscription.unsubscribe();
-        this.notesSubscription.unsubscribe();
-        this.activeNoteSubscription.unsubscribe();
-        this.selectedTagSubscription.unsubscribe();
-    }
-
-    get notesToDisplay(): Note[] {
-        return this.notesForTag();
-    }
-
-    notesForTag(tag?: string) {
-        tag = tag || this.selectedTag;
-
-        if (tag === '_All') {
-            return this.notes;
-        } else if (tag === '_Untagged') {
-            return this.notes.filter(n => n.Tags.length === 0);
-        }
-
-        return this.notes.filter(n => n.Tags.some(t => t.startsWith(tag)));
+        this.subscriptions.unsubscribe();
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         this.showModal = false;
+    }
+
+    get notesToDisplay(): Note[] {
+        return this.notesForTag(this.selectedTag, this.notes);
     }
 
     createNote() {
@@ -129,29 +87,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.showModal = false;
     }
 
-    setMode(mode: 'edit' | 'view') {
-        console.log('set the display mode here');
-    }
-
     selectNote(note: Note) {
         this.state.setActiveNote(note);
-    }
-
-    selectTag(tag: string) {
-        this.state.setSelectedTag(tag);
-    }
-
-    cleanTag(tag: string) {
-        return tag.replace(/(?:[^\/]+\/)+/, '');
-    }
-
-    padTag(tag: string) {
-        const search = /[^\/]+\//g;
-        let matches = 0;
-        while (search.exec(tag)) {
-            matches++;
-        }
-
-        return `${(matches * 16) + 16}px`;
     }
 }

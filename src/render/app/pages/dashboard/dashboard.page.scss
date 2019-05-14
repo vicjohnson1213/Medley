@@ -38,35 +38,6 @@ as-split-area {
         .toolbar {
             background-color: $darkerPurple;
         }
-
-        .tag {
-            padding: 8px 8px;
-            transition: background-color 100ms;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-
-            i {
-                font-size: 16px;
-                margin-right: 4px;
-                color: $lightPurple;
-            }
-
-            &.active {
-                background-color: $purple;
-            }
-
-            &:hover {
-                cursor: pointer;
-                background-color: $purple;
-            }
-
-            .count {
-                margin-left: auto;
-                padding-left: 8px;
-                color: $lighterPurple;
-            }
-        }
     }
 
     &.notes-pane {
@@ -81,7 +52,7 @@ as-split-area {
         }
 
         .note {
-            padding: 8px 8px;
+            padding: 8px 12px;
             transition: background-color 100ms;
             white-space: nowrap;
 

@@ -3,15 +3,7 @@
 
         <as-split-area size="220" class="tree-pane">
             <div class="toolbar">Groups</div>
-            <div class="tag" [class.active]="selectedTag === '_All'" (click)="selectTag('_All')">
-                <i class="material-icons">label</i>All notes <div class="count">{{ notesForTag('_All').length }}</div>
-            </div>
-            <div class="tag" [class.active]="selectedTag === tag" [style.padding-left]="padTag(tag)" *ngFor="let tag of (tags | alphabeticalBy)" (click)="selectTag(tag)">
-                <i class="material-icons">label</i>{{ cleanTag(tag) }} <div class="count">{{ notesForTag(tag).length }}</div>
-            </div>
-            <div class="tag" [class.active]="selectedTag === '_Untagged'" (click)="selectTag('_Untagged')">
-                    <i class="material-icons">label</i>Untagged <div class="count">{{ notesForTag('_Untagged').length }}</div>
-            </div>
+            <md-tag-tree></md-tag-tree>
         </as-split-area>
 
         <as-split-area size="220" class="notes-pane">
@@ -26,11 +18,8 @@
     </as-split>
 </div>
 
-<div class="modal" *ngIf="showModal">
-    <div class="background" (click)="dismissModal()"></div>
-    <div class="content">
-        <form [formGroup]="form" (submit)="createNote()">
-            <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
-        </form>
-    </div>
-</div>
+<md-modal *ngIf="showModal">
+    <form [formGroup]="form" (submit)="createNote()">
+        <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
+    </form>
+</md-modal>

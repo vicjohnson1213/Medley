@@ -1,0 +1,10 @@
+<div class="tag" [class.active]="selectedTag === '_All'" (click)="selectTag('_All')">
+    <i class="material-icons">label</i>All notes <div class="count">{{ notesForTag('_All', notes).length }}</div>
+</div>
+<div class="tag" [class.active]="selectedTag === tag" [style.padding-left.px]="padTag(tag)"
+    *ngFor="let tag of (tags | alphabeticalBy)" (click)="selectTag(tag)" (contextmenu)="rightClickTag($event, tag)">
+    <i class="material-icons">label</i>{{ cleanTag(tag) }} <div class="count">{{ notesForTag(tag, notes).length }}</div>
+</div>
+<div class="tag" [class.active]="selectedTag === '_Untagged'" (click)="selectTag('_Untagged')">
+    <i class="material-icons">label</i>Untagged <div class="count">{{ notesForTag('_Untagged', notes).length }}</div>
+</div>
