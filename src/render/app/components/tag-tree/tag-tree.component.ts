@@ -34,6 +34,10 @@ export class TagTreeComponent implements OnInit, OnDestroy {
             .subscribe(notes => {
                 this.notes = notes;
                 this.tags = this.createTags(this.notes);
+
+                if (!this.tags.includes(this.selectedTag)) {
+                    this.state.setSelectedTag('_All');
+                }
             });
     }
 

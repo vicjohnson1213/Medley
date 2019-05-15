@@ -1,12 +1,51 @@
 @import 'variables';
 
 :host {
+    display: flex;
+    flex-direction: column;
+    position: relative;
     overflow: hidden;
     background-color: $lightestGray;
     color: $black;
 
+    #noteNameField {
+        font-size: 24px;
+    }
+
+    .button-container {
+        padding: 0 12px;
+
+        button {
+            width: 100%;
+            color: $red;
+            background: transparent;
+            border: 1px solid $red;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: background-color 100ms;
+    
+            &:hover {
+                cursor: pointer;
+                background-color: $red;
+                color: $white;
+            }
+        }
+    }
+
+    .spacer {
+        flex: 1;
+    }
+
+    .input-container {
+        padding: 8px 12px;
+    }
+
     .tags {
         .title {
+            margin-top: 8px;
             padding: 8px 12px;
             font-weight: bold;
         }
@@ -38,8 +77,5 @@
             }
         }
 
-        .input-container {
-            padding: 8px 12px;
-        }
     }
 }

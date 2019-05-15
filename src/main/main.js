@@ -49,10 +49,6 @@ function createMainWindow() {
     const menuTemplate = menu.createMenuTemplate(app, mainWindow);
     Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
     registerIPC();
-    registerShortcuts();
-}
-
-function registerShortcuts() {
 }
 
 function registerIPC() {

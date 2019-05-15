@@ -33,8 +33,12 @@ as-split-area {
     }
 
     md-tag-tree {
-        @include hide-scrollbars;
-        overflow-y: scroll;
+        @include fancy-scroll;
+        padding-bottom: 12px;
+
+        &::-webkit-scrollbar-thumb {
+            background: $lightPurple;
+        }
     }
 }
 
@@ -53,8 +57,12 @@ as-split-area {
     }
 
     .note-list {
-        @include hide-scrollbars;
-        overflow-y: scroll;
+        @include fancy-scroll;
+        padding-bottom: 12px;
+
+        &::-webkit-scrollbar-thumb {
+            background: $lightGray;
+        }
 
         .note {
             @include no-select;
@@ -119,8 +127,13 @@ as-split-area {
     }
 
     md-edit-menu {
-        @include hide-scrollbars;
-        overflow-y: scroll;
+        @include fancy-scroll;
+        padding-bottom: 12px;
+        flex-grow: 1;
+
+        &::-webkit-scrollbar-thumb {
+            background: $lightGray;
+        }
     }
 }
 

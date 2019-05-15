@@ -51,6 +51,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             this.activeNote = note;
             this.editor.focus();
+
+            if (!note) {
+                this.showEditMenu = false;
+            }
         });
 
         this.subscriptions.sink = this.state.notes$.subscribe(notes => {
@@ -84,10 +88,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.state.createNote(name);
         this.newNoteForm.reset();
         this.showModal = false;
-    }
-
-    deleteNote() {
-        this.state.deleteNote(this.activeNote);
     }
 
     onEditorResized() {

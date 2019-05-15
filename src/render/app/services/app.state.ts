@@ -51,12 +51,14 @@ export class AppState {
         });
     }
 
-    setActiveNote(note: Note) {
+    setActiveNote(note?: Note) {
         this.activeNoteSub$.next(note);
-        this.ipc.send('loadNote', note.Path);
+        if (note) {
+            this.ipc.send('loadNote', note.Path);
+        }
     }
 
-    setSelectedTag(tag: string) {
+    setSelectedTag(tag?: string) {
         this.selectedTagSub$.next(tag);
     }
 
@@ -87,6 +89,7 @@ export class AppState {
         let notes = this.notesSub$.value;
         const idx = notes.indexOf(note);
         notes.splice(idx, 1);
+        this.notesSub$.next(notes);
         this.ipc.send('deleteNoteRequest', note);
     }
 

@@ -31,13 +31,12 @@ $toolbarShadow: 0px 2px 6px -2px $darkerPurple;
     @include hidden;
 }
 
-@mixin hide-scrollbars {
+@mixin fancy-scroll {
+    overflow-y: auto;
+
     &::-webkit-scrollbar {
-        width: 0px;  /* Remove scrollbar space */
-        background: transparent;  /* Optional: just make scrollbar invisible */
+        width: 6px;
+        background: transparent;
     }
-    /* Optional: show position indicator in red */
-    &::-webkit-scrollbar-thumb {
-        background: #FF0000;
-    }
+
 }

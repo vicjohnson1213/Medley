@@ -14,6 +14,7 @@ export class EditMenuComponent implements OnInit {
     private subscriptions = new SubSink();
 
     addTagForm: FormGroup;
+    nameForm: FormGroup;
     activeNote: Note;
 
     constructor(
@@ -25,8 +26,19 @@ export class EditMenuComponent implements OnInit {
             tag: ['']
         });
 
+        this.nameForm = this.fb.group({
+            name: ['']
+        });
+
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
+            if (!note) {
+                return;
+            }
+
             this.activeNote = note;
+            this.nameForm = this.fb.group({
+                name: [note.Name]
+            });
         });
     }
     
@@ -38,5 +50,10 @@ export class EditMenuComponent implements OnInit {
 
     deleteTag(tag: string) {
         this.state.deleteTagFromNote(tag, this.activeNote);
+    }
+
+    deleteNote() {
+        this.state.deleteNote(this.activeNote);
+        this.state.setActiveNote();
     }
 }

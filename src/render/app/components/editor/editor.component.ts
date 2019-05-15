@@ -50,8 +50,8 @@ export class EditorComponent implements OnInit, OnDestroy {
         occurrencesHighlight: false,
         scrollbar: {
             useShadows: false,
-            horizontalScrollbarSize: 10,
-            verticalScrollbarSize: 10
+            horizontalScrollbarSize: 6,
+            verticalScrollbarSize: 6
         },
         snippetSuggestions: 'none',
         wordBasedSuggestions: false,
@@ -76,13 +76,14 @@ export class EditorComponent implements OnInit, OnDestroy {
             this.state.saveNote(this.note);
         });
 
-        this.noteSubscription = this.state.activeNote$.pipe(
-            filter(note => !!note)
-        ).subscribe(note => {
+        this.noteSubscription = this.state.activeNote$.subscribe(note => {
             this.note = note;
-            this.form.patchValue({
-                content: note.Content
-            });
+
+            if (this.note) {
+                this.form.patchValue({
+                    content: note.Content
+                });
+            }
         });
     }
 
