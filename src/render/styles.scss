@@ -11,10 +11,6 @@ body {
     background-color: $black;
 }
 
-.no-select {
-    user-select: none;
-}
-
 input[type="text"] {
     background-color: transparent;
     display: block;
@@ -30,5 +26,44 @@ input[type="text"] {
 
     &:focus {
         outline: none;
+    }
+}
+
+
+.toolbar {
+    height: 40px;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    position: relative;
+    z-index: 10;
+    box-shadow: $toolbarShadow;
+    color: $white;
+
+    .title {
+        @include no-select;
+        font-weight: bold;
+    }
+
+    button {
+        transition: background-color 100ms;
+        background-color: transparent;
+        color: $white;
+        border: none;
+        border-radius: 4px;
+        display: flex;
+        align-content: center;
+        padding: 2px 4px;
+        
+        &:hover {
+            cursor: pointer;
+            background-color: $purple;
+        }
+
+        &:focus {
+            outline: none;
+        }
     }
 }

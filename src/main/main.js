@@ -73,6 +73,18 @@ function registerIPC() {
     ipcMain.on('createNoteRequest', (event, name) => {
         createNote(name);
     });
+
+    ipcMain.on('deleteNoteRequest', (event, note) => {
+        deleteNote(note);
+    });
+
+    ipcMain.on('addTagToNoteRequest', (event, tag, note) => {
+        addTagToNote(tag, note);
+    });
+
+    ipcMain.on('deleteTagFromNoteRequest', (event, tag, note) => {
+        deleteTagFromNote(tag, note);
+    });
 }
 
 function getNotes() {
@@ -93,33 +105,24 @@ function createNote(name, attempt) {
 
     const manifest = requireUncached(MANIFEST_FILE);
 
-    const parts = name.split('/');
+    const parts = name.split('/').map(p => p.trim());
     const noteName = parts.pop();
     const tag = parts.join('/');
     const filename = noteName + (attempt > 0 ? ` (${attempt})` : '');
     const fullName = `${filename}.md`;
     const filepath = path.join(NOTES_DIR, fullName);
 
-    manifest.Notes.push({
+    const newNote = {
         Name: noteName,
         Path: filepath,
-        Tags: tag ? [tag] : []
-    });
+        Tags: tag.length ? [tag] : []
+    };
 
-    console.log('creating:', {
-        Name: noteName,
-        Path: filepath,
-        Tags: tag ? [tag] : []
-    });
+    manifest.Notes.push(newNote);
 
-    fs.writeFile(filepath, `# ${noteName}`, { flag: 'wx' })
+    fs.writeFile(filepath, '', { flag: 'wx' })
         .then(() => {
-            mainWindow.webContents.send('noteCreated', {
-                Name: noteName,
-                Path: filepath,
-                Tags: [tag]
-            });
-
+            mainWindow.webContents.send('noteCreated', newNote);
             return fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
         }).catch(err => {
             if (err.code === 'EEXIST') {
@@ -128,4 +131,27 @@ function createNote(name, attempt) {
 
             console.error(err);
         });
+}
+
+function deleteNote(note) {
+    const manifest = requireUncached(MANIFEST_FILE);
+    const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
+    manifest.Notes.splice(idx, 1);
+    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2))
+        .then(() => fs.unlink(note.Path));
+}
+
+function addTagToNote(tag, note) {
+    const manifest = requireUncached(MANIFEST_FILE);
+    const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
+    wholeNote.Tags.push(tag);
+    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+function deleteTagFromNote(tag, note) {
+    const manifest = requireUncached(MANIFEST_FILE);
+    const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
+    const tagIdx = wholeNote.Tags.indexOf(tag);
+    wholeNote.Tags.splice(tagIdx, 1);
+    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }

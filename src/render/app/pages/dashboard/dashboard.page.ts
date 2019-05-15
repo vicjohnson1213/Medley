@@ -27,11 +27,12 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     private resizeEmitter = new EventEmitter();
     resize$ = this.resizeEmitter.asObservable();
 
-    form: FormGroup;
+    newNoteForm: FormGroup;
     notes: Note[];
     selectedTag: string;
     activeNote: Note;
     showModal = false;
+    showEditMenu = false;
 
     constructor(
         private fb: FormBuilder,
@@ -39,12 +40,14 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         private state: AppState) {}
 
     ngOnInit() {
-        this.form = this.fb.group({
+        this.newNoteForm = this.fb.group({
             name: ['', Validators.required]
         });
 
-        this.subscriptions.sink = this.splitEl.dragProgress$.subscribe(() => this.zone.run(() => this.resizeEmitter.emit()));
-        this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
+        this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => {
+            this.selectedTag = tag;
+        });
+
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             this.activeNote = note;
             this.editor.focus();
@@ -77,10 +80,22 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
 
     createNote() {
-        const name = this.form.value.name;
+        const name = this.newNoteForm.value.name;
         this.state.createNote(name);
-        this.form.reset();
+        this.newNoteForm.reset();
         this.showModal = false;
+    }
+
+    deleteNote() {
+        this.state.deleteNote(this.activeNote);
+    }
+
+    onEditorResized() {
+        this.resizeEmitter.emit()
+    }
+
+    toggleEdit() {
+        this.showEditMenu = !this.showEditMenu;
     }
 
     dismissModal() {

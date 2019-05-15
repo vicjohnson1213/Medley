@@ -1,0 +1,45 @@
+@import 'variables';
+
+:host {
+    overflow: hidden;
+    background-color: $lightestGray;
+    color: $black;
+
+    .tags {
+        .title {
+            padding: 8px 12px;
+            font-weight: bold;
+        }
+
+        .tag {
+            @include no-select;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            transition: background-color 100ms;
+            white-space: nowrap;
+
+            i {
+                font-size: 16px;
+                margin-right: 4px;
+                color: $lightGray;
+
+                &.delete {
+                    color: $red;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    margin-left: auto;
+                    
+                    &:hover {
+                        cursor: pointer;
+                        background-color: $lighterGray;
+                    }
+                }
+            }
+        }
+
+        .input-container {
+            padding: 8px 12px;
+        }
+    }
+}

@@ -1,6 +1,7 @@
 @import 'variables';
 
 .tag {
+    @include no-select;
     padding: 8px 8px;
     transition: background-color 100ms;
     display: flex;

@@ -46,7 +46,7 @@ export class AppState {
                 notes.push(note);
                 this.notesSub$.next(notes);
                 this.activeNoteSub$.next(note);
-                this.selectedTagSub$.next(note.Tags[0]);
+                this.selectedTagSub$.next(note.Tags[0] || '_All');
             });
         });
     }
@@ -60,12 +60,34 @@ export class AppState {
         this.selectedTagSub$.next(tag);
     }
 
+    addTagToNote(tag: string, note: Note) {
+        if (!note.Tags.includes(tag)) {
+            note.Tags.push(tag);
+            this.notesSub$.next(this.notesSub$.value);
+            this.ipc.send('addTagToNoteRequest', tag, note);
+        }
+    }
+
+    deleteTagFromNote(tag: string, note: Note) {
+        const idx = note.Tags.indexOf(tag);
+        note.Tags.splice(idx, 1);
+        this.notesSub$.next(this.notesSub$.value);
+        this.ipc.send('deleteTagFromNoteRequest', tag, note);
+    }
+
     saveNote(note: Note) {
         this.ipc.send('saveNote', note);
     }
 
     createNote(name: string) {
         this.ipc.send('createNoteRequest', name);
+    }
+
+    deleteNote(note: Note) {
+        let notes = this.notesSub$.value;
+        const idx = notes.indexOf(note);
+        notes.splice(idx, 1);
+        this.ipc.send('deleteNoteRequest', note);
     }
 
     initNotes() {

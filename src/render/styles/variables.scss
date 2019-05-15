@@ -4,9 +4,40 @@ $purple: #353566;
 $lightPurple: #5B5B99;
 $lighterPurple: #A0A0E5;
 
+$red: #C91818;
+
 $white: #F5F5F5;
 $lightestGray: #EDEDED;
 $lighterGray: #DADADA;
 $lightGray: #CCCCCC;
 $gray: #999999;
 $black: #222222;
+
+$toolbarShadow: 0px 2px 6px -2px $darkerPurple;
+
+@mixin no-select {
+    user-select: none;
+}
+
+.no-select {
+    @include no-select;
+}
+
+@mixin hidden {
+    visibility: hidden;
+}
+
+.hidden {
+    @include hidden;
+}
+
+@mixin hide-scrollbars {
+    &::-webkit-scrollbar {
+        width: 0px;  /* Remove scrollbar space */
+        background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+    /* Optional: show position indicator in red */
+    &::-webkit-scrollbar-thumb {
+        background: #FF0000;
+    }
+}

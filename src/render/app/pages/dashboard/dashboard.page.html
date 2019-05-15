@@ -2,24 +2,45 @@
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
 
         <as-split-area size="220" class="tree-pane">
-            <div class="toolbar">Groups</div>
+            <div class="toolbar">
+                <div class="title">Groups</div>
+            </div>
             <md-tag-tree></md-tag-tree>
         </as-split-area>
 
         <as-split-area size="220" class="notes-pane">
-            <div class="toolbar">Notes</div>
-            <div class="note" [class.active]="note === activeNote" *ngFor="let note of (notesToDisplay | alphabeticalBy:'Name')" (click)="selectNote(note)">{{ note.Name }}</div>
+            <div class="toolbar">
+                <div class="title">Notes</div>
+            </div>
+            <div class="note-list">
+                <div class="note" [class.active]="note === activeNote" *ngFor="let note of (notesToDisplay | alphabeticalBy:'Name')" (click)="selectNote(note)">{{ note.Name }}</div>
+            </div>
         </as-split-area>
 
         <as-split-area size="*" class="editor-pane">
-            <div class="toolbar"><div class="title">{{ activeNote?.Name }}</div></div>
-            <md-editor [resize$]="resize$"></md-editor>
+            <div class="toolbar">
+                <div class="title">{{ activeNote?.Name }}</div>
+                <div class="right" [class.expanded]="activeNote" *ngIf="activeNote">
+                    <button (click)="toggleEdit()">
+                        <span class="material-icons" *ngIf="!showEditMenu">more_horiz</span>
+                        <span class="material-icons" *ngIf="showEditMenu">keyboard_arrow_right</span>
+                    </button>
+                </div>
+            </div>
+            <md-editor [resize$]="resize$" (resized)="onEditorResized()"></md-editor>
         </as-split-area>
+            
     </as-split>
+    <div class="edit-menu" [class.expanded]="showEditMenu">
+        <div class="toolbar">
+            <div class="title"></div>
+        </div>
+        <md-edit-menu></md-edit-menu>
+    </div>
 </div>
 
 <md-modal *ngIf="showModal" (dismiss)="dismissModal()">
-    <form [formGroup]="form" (submit)="createNote()">
-        <input type="text" name="note-name" placeholder="Note name" formControlName="name" autofocus #nameInput />
+    <form [formGroup]="newNoteForm" (submit)="createNote()">
+        <input type="text" formControlName="name" placeholder="Note name" #nameInput />
     </form>
 </md-modal>

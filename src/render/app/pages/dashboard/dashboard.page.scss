@@ -5,90 +5,122 @@
     position: relative;
 }
 
-$toolbarShadow: 0px 2px 6px -2px $darkerPurple;
-
 .container {
     height: 100vh;
     transition: filter 100ms;
+
+    display: flex;
 
     &.darken {
         filter: brightness(25%);
     }
 }
 
-.toolbar {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    position: relative;
-    z-index: 10;
-    box-shadow: $toolbarShadow;
-    font-weight: bold;
-    color: $white;
+as-split-area {
+    overflow-y: hidden !important;
 }
 
-as-split-area {
-    &.tree-pane {
-        z-index: 2;
-        background-color: $darkPurple;
-        color: $white;
-        box-shadow: 1px 4px 5px -1px $darkerPurple;
+.tree-pane {
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    background-color: $darkPurple;
+    color: $white;
+    box-shadow: 1px 4px 5px -1px $darkerPurple;
 
-        .toolbar {
-            background-color: $darkerPurple;
-        }
+    .toolbar {
+        background-color: $darkerPurple;
     }
 
-    &.notes-pane {
-        z-index: 1;
-        background-color: $lightestGray;
-        color: $black;
-        box-shadow: -4px 6px 10px -1px $black;
+    md-tag-tree {
+        @include hide-scrollbars;
+        overflow-y: scroll;
+    }
+}
 
-        .toolbar {
-            font-weight: bold;
-            background-color: $darkPurple;
-        }
+.notes-pane {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    overflow-y: hidden;
+    background-color: $lightestGray;
+    color: $black;
+    box-shadow: -4px 6px 10px -1px $black;
+
+    .toolbar {
+        font-weight: bold;
+        background-color: $darkPurple;
+    }
+
+    .note-list {
+        @include hide-scrollbars;
+        overflow-y: scroll;
 
         .note {
+            @include no-select;
             padding: 8px 12px;
             transition: background-color 100ms;
             white-space: nowrap;
-
+    
             &.active {
                 background-color: $lighterGray;
             }
-
+    
             &:hover {
                 background-color: $lighterGray;
                 cursor: pointer;
             }
         }
     }
+}
 
-    &.editor-pane {
-        overflow-y: hidden;
-        display: flex;
-        flex-direction: column;
+.editor-pane {
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
 
-        background-color: $white;
+    background-color: $white;
 
-        .toolbar {
-            z-index: 1;
-            flex: 0 1 auto;
-            background-color: $lightPurple;
+    .toolbar {
+        z-index: 1;
+        flex: 0 1 auto;
+        background-color: $lightPurple;
 
-            .title {
-                font-weight: bold;
-            }
+        .title {
+            font-weight: bold;
         }
+    }
 
-        md-editor {
-            margin-top: 8px;
-            margin-left: 8px;
-            flex: 1 1 auto;
-        }
+    md-editor {
+        margin-top: 8px;
+        margin-left: 8px;
+        flex: 1 1 auto;
+    }
+}
+
+.edit-menu {
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+    width: 0px;
+    transition: width 250ms ease-in-out;
+    background-color: $lightestGray;
+    color: $black;
+    box-shadow: 4px 6px 10px -1px $black;
+
+    &.expanded {
+        width: 400px;
+    }
+
+    .toolbar {
+        font-weight: bold;
+        background-color: $darkPurple;
+    }
+
+    md-edit-menu {
+        @include hide-scrollbars;
+        overflow-y: scroll;
     }
 }
 

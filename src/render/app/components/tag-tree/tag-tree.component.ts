@@ -26,11 +26,12 @@ export class TagTreeComponent implements OnInit, OnDestroy {
     constructor(private state: AppState) {}
 
     ngOnInit() {
-        this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => this.selectedTag = tag);
+        this.subscriptions.sink = this.state.selectedTag$.subscribe(tag => {
+            this.selectedTag = tag;
+        });
+
         this.subscriptions.sink = this.state.notes$
-            .pipe(
-                distinctUntilChanged()
-            ).subscribe(notes => {
+            .subscribe(notes => {
                 this.notes = notes;
                 this.tags = this.createTags(this.notes);
             });
