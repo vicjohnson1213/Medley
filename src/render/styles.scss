@@ -1,8 +1,11 @@
 @import 'variables';
 @import 'fonts';
+@import 'markdown';
 
 * {
     box-sizing: border-box;
+    transition: color 100ms ease-in-out;
+    transition: background-color 100ms ease-in-out;
 }
 
 body {
@@ -36,7 +39,6 @@ input[type="text"] {
     display: flex;
     flex-shrink: 0;
     align-items: center;
-    justify-content: space-between;
     padding: 8px 12px;
     position: relative;
     z-index: 10;
@@ -49,8 +51,53 @@ input[type="text"] {
         font-size: 16px;
     }
 
+    .group {
+        display: flex;
+    }
+
+    .right {
+        margin-left: auto;
+    }
+
+    button + button,
+    button + .segmented-button,
+    .segmented-button + button {
+        margin-left: 16px;
+    }
+
+    .segmented-button {
+        display: flex;
+
+        button {
+            border-radius: 0px;
+
+            &:first-child {
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+            &:last-child {
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+
+            &.active {
+                background-color: $purple;
+                color: $lightPurple;
+                &:hover {
+                    cursor: default;
+                }
+            }
+            &:not(.active) {
+                border: 1px solid $purple;
+            }
+
+            & + button {
+                margin-left: 0px;
+            }
+        }
+    }
+
     button {
-        transition: background-color 100ms;
         background-color: transparent;
         color: $white;
         border: none;

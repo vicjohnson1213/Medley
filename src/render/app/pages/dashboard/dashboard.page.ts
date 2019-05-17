@@ -33,6 +33,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     activeNote: Note;
     showModal = false;
     showEditMenu = false;
+    previewMode = false;
 
     constructor(
         private fb: FormBuilder,
@@ -50,7 +51,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             this.activeNote = note;
-            this.editor.focus();
+            if (!this.previewMode && this.activeNote) {
+                this.editor.focus();
+            }
 
             if (!note) {
                 this.showEditMenu = false;

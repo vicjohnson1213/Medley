@@ -53,6 +53,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             horizontalScrollbarSize: 6,
             verticalScrollbarSize: 6
         },
+        smoothScrolling: true,
         snippetSuggestions: 'none',
         wordBasedSuggestions: false,
         wordWrap: 'on',

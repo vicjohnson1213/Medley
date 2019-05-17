@@ -1,0 +1,116 @@
+@import 'variables';
+
+:host {
+    @include fancy-scroll;
+
+    &::-webkit-scrollbar-thumb {
+        background: $lightGray;
+    }
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 8px 40px;
+
+    &::ng-deep {
+        color: $black;
+
+        h1, h2, h3, h4, h5 {
+            font-weight: bold;
+        }
+
+        h1, h2 {
+            border-bottom: 1px solid $lighterGray;
+        }
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: $purple;
+        
+            &:visited {
+                color: $purple;
+            }
+        
+            &:hover,
+            &:visited:hover {
+                color: $darkerPurple;
+            }
+        }
+
+        code {
+            font-family: "Roboto Mono", "Courier New", monospace;
+            padding: .25em .5em;
+            font-size: 85%;
+            color: $red;
+            background-color: $lightestGray;
+            border-radius: 3px;
+        }
+        
+        pre {
+            @include fancy-scroll;
+            font-family: "Roboto Mono", "Courier New", monospace;
+            display: block;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            font-size: .8rem;
+            line-height: 1.4;
+            white-space: pre;
+            white-space: pre-wrap;
+            word-break: break-all;
+            word-wrap: break-word;
+            background-color: $lightestGray;
+            white-space: pre;
+            word-wrap: normal;
+            overflow-x: auto;
+            border-radius: 4px;
+
+            &::-webkit-scrollbar-thumb {
+                background: $lightGray;
+            }
+        
+            code {
+                padding: 0;
+                font-size: 100%;
+                color: inherit;
+                background-color: transparent;
+            }
+        }
+        
+        table {
+            margin-bottom: 1rem;
+            width: 100%;
+            border: 1px solid $gray;
+            border-radius: 4px;
+            border-collapse: collapse;
+        }
+        
+        td,
+        th {
+            padding: .25rem .5rem;
+            border: 1px solid $lighterGray;
+        }
+        
+        tbody tr:nth-child(odd) td,
+        tbody tr:nth-child(odd) th {
+            background-color: $lightestGray;
+        }
+        
+        /* Blockquotes */
+        
+        blockquote {
+            margin: 0;
+            padding: 8px 0 8px 16px;
+            border-left: 4px solid $lighterGray;
+            color: $gray;
+          
+            & :first-child {
+                margin-top: 0;
+            }
+        
+            & :last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

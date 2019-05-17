@@ -73,7 +73,6 @@ as-split-area {
         .note {
             @include no-select;
             padding: 8px 12px;
-            transition: background-color 100ms;
             white-space: nowrap;
     
             &.active {

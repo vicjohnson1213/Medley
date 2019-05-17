@@ -28,14 +28,16 @@
               { "glob": "**/*", "input": "node_modules/monaco-editor/dev/vs", "output": "assets/vs/" }
             ],
             "styles": [
-              "src/render/styles.scss"
+              "src/render/styles.scss",
+              "node_modules/highlight.js/styles/tomorrow.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/render/styles/"
               ]
             },
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
@@ -89,14 +91,16 @@
             "tsConfig": "src/render/tsconfig.spec.json",
             "karmaConfig": "src/render/karma.conf.js",
             "styles": [
-              "src/render/styles.scss"
+              "src/render/styles.scss",
+              "node_modules/highlight.js/styles/tomorrow.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/render/styles/"
               ]
             },
-            "scripts": [],
+            "scripts": [
+            ],
             "assets": [
               "src/render/favicon.ico",
               "src/render/assets"
