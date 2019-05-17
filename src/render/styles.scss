@@ -8,7 +8,8 @@
 body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
-    background-color: $black;
+    font-size: 14px;
+    background-color: $white;
 }
 
 input[type="text"] {
@@ -18,7 +19,7 @@ input[type="text"] {
     border-bottom: 2px solid $lightPurple;
     padding: 4px 0px;
     width: 100%;
-    font-size: 16px;
+    font-size: 14px;
 
     &::placeholder {
         color: $gray;
@@ -44,6 +45,7 @@ input[type="text"] {
     .title {
         @include no-select;
         font-weight: bold;
+        font-size: 16px;
     }
 
     button {

@@ -18,7 +18,9 @@ const MANIFEST_FILE = path.join(MDEDIT_DIR, 'manifest.json');
 
 let mainWindow;
 
-app.on('ready', createMainWindow);
+app.on('ready', () => {
+    verifySetup().then(createMainWindow);
+});
 
 app.on('activate', () => {
     if (mainWindow === null) {
@@ -150,4 +152,20 @@ function deleteTagFromNote(tag, note) {
     const tagIdx = wholeNote.Tags.indexOf(tag);
     wholeNote.Tags.splice(tagIdx, 1);
     fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+function verifySetup() {
+    return fs.mkdir(MDEDIT_DIR)
+        .then(() => Promise.all([verifyManifest(), verifyNotesDir()]))
+        .catch(() => Promise.all([verifyManifest(), verifyNotesDir()]))
+        .catch(() => {}); 
+
+    function verifyManifest() {
+        const manifestTemplate = JSON.stringify(require('./manifest-template'), ' ', 2);
+        return fs.writeFile(MANIFEST_FILE, manifestTemplate, { flag: 'wx' });
+    }
+
+    function verifyNotesDir() {
+        return fs.mkdir(NOTES_DIR);
+    }
 }
