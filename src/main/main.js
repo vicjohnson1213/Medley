@@ -65,7 +65,7 @@ function registerIPC() {
     });
 
     ipcMain.on('saveNote', (event, note) => {
-        fs.writeFile(note.Path, note.Content);
+        saveNote(note);
     });
 
     ipcMain.on('createNoteRequest', (event, name) => {
@@ -143,6 +143,16 @@ function addTagToNote(tag, note) {
     const manifest = requireUncached(MANIFEST_FILE);
     const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
     wholeNote.Tags.push(tag);
+    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+function saveNote(note) {
+    const content = note.Content;
+    delete note.Content;
+    const manifest = requireUncached(MANIFEST_FILE);
+    const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
+    manifest.Notes.splice(idx, 1, note);
+    fs.writeFile(note.Path, content);
     fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 

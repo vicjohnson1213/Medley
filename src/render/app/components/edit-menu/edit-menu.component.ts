@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { SubSink } from 'subsink';
 
 import { AppState } from '../../services';
 import { Note } from '../../models';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'md-edit-menu',
     templateUrl: './edit-menu.component.html',
     styleUrls: ['./edit-menu.component.scss']
 })
-export class EditMenuComponent implements OnInit {
+export class EditMenuComponent implements OnInit, OnDestroy {
     private subscriptions = new SubSink();
 
     addTagForm: FormGroup;
@@ -27,8 +28,16 @@ export class EditMenuComponent implements OnInit {
         });
 
         this.nameForm = this.fb.group({
-            name: ['']
+            name: ''
         });
+
+        this.nameForm.get('name')
+            .valueChanges.pipe(
+                debounceTime(500),
+                distinctUntilChanged()
+            ).subscribe(() => {
+                this.updateNoteName();
+            });
 
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             if (!note) {
@@ -36,10 +45,20 @@ export class EditMenuComponent implements OnInit {
             }
 
             this.activeNote = note;
-            this.nameForm = this.fb.group({
-                name: [note.Name]
-            });
+            this.nameForm.setValue({ name: this.activeNote.Name });
         });
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    updateNoteName() {
+        const name = this.nameForm.value.name;
+        if (name !== this.activeNote.Name) {
+            this.activeNote.Name = name;
+            this.state.saveNote(this.activeNote);
+        }
     }
     
     addTag() {
