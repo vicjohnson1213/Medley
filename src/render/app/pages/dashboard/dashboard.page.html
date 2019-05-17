@@ -1,14 +1,14 @@
 <div class="container" [class.darken]="showModal">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
 
-        <as-split-area size="220" class="tree-pane">
+        <as-split-area size="220" minSize="100" maxSize="300" class="tree-pane">
             <div class="toolbar">
                 <div class="title">Groups</div>
             </div>
             <md-tag-tree></md-tag-tree>
         </as-split-area>
 
-        <as-split-area size="220" class="notes-pane">
+        <as-split-area size="220" minSize="100" maxSize="300" class="notes-pane">
             <div class="toolbar">
                 <div class="title">Notes</div>
             </div>
@@ -28,6 +28,7 @@
                 </div>
             </div>
             <md-editor [resize$]="resize$" (resized)="onEditorResized()"></md-editor>
+            <div class="empty" *ngIf="!activeNote">Nothing to see here!</div>
         </as-split-area>
             
     </as-split>
@@ -41,6 +42,6 @@
 
 <md-modal *ngIf="showModal" (dismiss)="dismissModal()">
     <form [formGroup]="newNoteForm" (submit)="createNote()">
-        <input type="text" formControlName="name" placeholder="Note name" #nameInput />
+        <input type="text" class="new-note" formControlName="name" placeholder="Note name" #nameInput />
     </form>
 </md-modal>

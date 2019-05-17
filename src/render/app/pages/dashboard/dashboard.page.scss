@@ -16,6 +16,10 @@
     }
 }
 
+.new-note {
+    font-size: 24px;
+}
+
 as-split-area {
     overflow-y: hidden !important;
 }
@@ -34,6 +38,7 @@ as-split-area {
 
     md-tag-tree {
         @include fancy-scroll;
+        overflow-x: hidden;
         padding-bottom: 12px;
 
         &::-webkit-scrollbar-thumb {
@@ -58,6 +63,7 @@ as-split-area {
 
     .note-list {
         @include fancy-scroll;
+        overflow-x: hidden;
         padding-bottom: 12px;
 
         &::-webkit-scrollbar-thumb {
@@ -86,7 +92,7 @@ as-split-area {
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
-
+    position: relative;
     background-color: $white;
 
     .toolbar {
@@ -103,6 +109,20 @@ as-split-area {
         margin-top: 8px;
         margin-left: 8px;
         flex: 1 1 auto;
+    }
+
+    .empty {
+        @include no-select;
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 48px;
+        background-color: $lightGray;
+        color: transparent;
+        text-shadow: 0px 2px 3px rgba(255,255,255,0.3);
+        background-clip: text;
+        white-space: nowrap;
     }
 }
 
@@ -128,6 +148,7 @@ as-split-area {
 
     md-edit-menu {
         @include fancy-scroll;
+        overflow-x: hidden;
         padding-bottom: 12px;
         flex-grow: 1;
 
