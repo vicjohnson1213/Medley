@@ -2,8 +2,8 @@
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const url = require('url');
-const crypto = require('crypto');
 const fs = require('fs').promises;
+const os = require('os');
 
 const menu = require('./menu');
 
@@ -12,7 +12,8 @@ function requireUncached(module) {
     return require(module);
 }
 
-const MDEDIT_DIR = path.join(process.env.HOME, '.mdedit');
+const HOME = os.homedir();
+const MDEDIT_DIR = path.join(HOME, '.mdedit');
 const NOTES_DIR = path.join(MDEDIT_DIR, 'notes');
 const MANIFEST_FILE = path.join(MDEDIT_DIR, 'manifest.json');
 
@@ -32,7 +33,7 @@ function createMainWindow() {
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 700,
-        title: 'Markdown Editor',
+        title: 'Ümlaut',
         webPreferences: {
             nodeIntegration: true
         }
