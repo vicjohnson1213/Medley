@@ -104,14 +104,14 @@ a.button {
             }
 
             &.active {
-                background-color: $purple;
+                background-color: $darkPurple;
                 color: $lightPurple;
                 &:hover {
                     cursor: default;
                 }
             }
             &:not(.active) {
-                border: 1px solid $purple;
+                border: 1px solid $darkPurple;
             }
 
             & + button {
@@ -128,7 +128,7 @@ a.button {
         
         &:hover {
             cursor: pointer;
-            background-color: $purple;
+            background-color: $darkPurple;
         }
 
         &:focus {

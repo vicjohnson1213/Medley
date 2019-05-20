@@ -72,12 +72,6 @@
     "directories": {
       "output": "releases"
     },
-    "win": {
-      "icon": "build/icon-win.png"
-    },
-    "mac": {
-      "icon": "build/icon-mac.png"
-    },
     "publish": [
       {
         "provider": "github",
