@@ -1,6 +1,12 @@
 {
   "name": "medley",
   "productName": "Medley",
+  "description": "A note taking app based on markdown.",
+  "author": {
+    "name": "Victor Johnson",
+    "email": "vicjohnson1213@gmail.com",
+    "url": "https://vicjohnson1213.github.io"
+  },
   "version": "0.0.1",
   "main": "src/main/main.js",
   "scripts": {
@@ -65,6 +71,12 @@
     "appId": "com.vicjohnson1213.Medley",
     "directories": {
       "output": "releases"
+    },
+    "win": {
+      "icon": "build/icon-win.png"
+    },
+    "mac": {
+      "icon": "build/icon-mac.png"
     },
     "publish": [
       {
