@@ -1,14 +1,14 @@
-<div class="container" [class.darken]="showModal">
+<div class="container">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
 
-        <as-split-area size="220" minSize="100" maxSize="300" class="tree-pane">
+        <as-split-area size="220" minSize="100" maxSize="400" class="tree-pane">
             <div class="toolbar">
                 <div class="title">Groups</div>
             </div>
             <md-tag-tree></md-tag-tree>
         </as-split-area>
 
-        <as-split-area size="220" minSize="100" maxSize="300" class="notes-pane">
+        <as-split-area size="220" minSize="100" maxSize="400" class="notes-pane">
             <div class="toolbar">
                 <div class="title">Notes</div>
             </div>
@@ -22,10 +22,10 @@
                 <div class="title">{{ activeNote?.Name }}</div>
                 <div class="right group" [class.expanded]="activeNote" *ngIf="activeNote">
                     <div class="segmented-button">
-                        <button [class.active]="!previewMode" (click)="previewMode = false">
+                        <button [class.active]="!previewMode" (click)="togglePreview()">
                                 <span class="material-icons">code</span>
                         </button>
-                        <button [class.active]="previewMode" (click)="previewMode = true">
+                        <button [class.active]="previewMode" (click)="togglePreview()">
                                 <span class="material-icons">photo</span>
                         </button>
                     </div>
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<md-modal *ngIf="showModal" (dismiss)="dismissModal()">
+<md-modal *ngIf="showNewNoteModal" (dismiss)="dismissModals()">
     <form [formGroup]="newNoteForm" (submit)="createNote()">
         <input type="text" class="new-note" formControlName="name" placeholder="Note name" #nameInput />
     </form>

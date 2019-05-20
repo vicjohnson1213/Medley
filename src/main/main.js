@@ -4,6 +4,7 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs').promises;
 const os = require('os');
+const { autoUpdater } = require("electron-updater");
 
 const menu = require('./menu');
 
@@ -13,13 +14,14 @@ function requireUncached(module) {
 }
 
 const HOME = os.homedir();
-const MDEDIT_DIR = path.join(HOME, '.mdedit');
-const NOTES_DIR = path.join(MDEDIT_DIR, 'notes');
-const MANIFEST_FILE = path.join(MDEDIT_DIR, 'manifest.json');
+const MEDLEY_DIR = path.join(HOME, '.medley');
+const NOTES_DIR = path.join(MEDLEY_DIR, 'notes');
+const MANIFEST_FILE = path.join(MEDLEY_DIR, 'manifest.json');
 
 let mainWindow;
 
 app.on('ready', () => {
+    autoUpdater.checkForUpdatesAndNotify();
     verifySetup().then(createMainWindow);
 });
 
@@ -33,7 +35,7 @@ function createMainWindow() {
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 700,
-        title: 'Ümlaut',
+        title: 'Medley',
         webPreferences: {
             nodeIntegration: true
         }
@@ -49,13 +51,19 @@ function createMainWindow() {
         mainWindow = null;
     });
 
+    mainWindow.webContents.on('will-navigate', (event, url) => {
+        event.preventDefault();
+        shell.openExternal(url);
+    });
+
     const menuTemplate = menu.createMenuTemplate(app, mainWindow);
     Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
+
     registerIPC();
 }
 
 function registerIPC() {
-    ipcMain.on('getNotes', (event, args) => {
+    ipcMain.on('getNotes', () => {
         getNotes();
     });
 
@@ -166,7 +174,7 @@ function deleteTagFromNote(tag, note) {
 }
 
 function verifySetup() {
-    return fs.mkdir(MDEDIT_DIR)
+    return fs.mkdir(MEDLEY_DIR)
         .then(() => Promise.all([verifyManifest(), verifyNotesDir()]))
         .catch(() => Promise.all([verifyManifest(), verifyNotesDir()]))
         .catch(() => {}); 

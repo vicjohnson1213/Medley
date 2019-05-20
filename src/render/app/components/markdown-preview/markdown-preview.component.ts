@@ -27,11 +27,12 @@ export class MarkdownPreviewComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
-            if (!note || !note.Content) {
+            if (!note) {
                 return;
             }
 
-            const rendered = marked(note.Content);
+            const content = note.Content || '';
+            const rendered = marked(content);
             this.renderer.setProperty(this.target.nativeElement, 'innerHTML', rendered);
         });
     }

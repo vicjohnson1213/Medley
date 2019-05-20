@@ -18,6 +18,7 @@ export class AppState {
     notes$ = this.notesSub$.asObservable();
 
     createNoteRequest = new EventEmitter();
+    updateAvailable = new EventEmitter();
 
     constructor(private zone: NgZone) {
         this.ipc = (<any>window).require('electron').ipcRenderer;
@@ -48,6 +49,10 @@ export class AppState {
                 this.activeNoteSub$.next(note);
                 this.selectedTagSub$.next(note.Tags[0] || '_All');
             });
+        });
+
+        this.ipc.on('updateAvailable', () => {
+            this.updateAvailable.emit();
         });
     }
 

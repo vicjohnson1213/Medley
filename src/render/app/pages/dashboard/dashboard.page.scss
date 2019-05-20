@@ -10,10 +10,6 @@
     transition: filter 100ms;
 
     display: flex;
-
-    &.darken {
-        filter: brightness(25%);
-    }
 }
 
 .new-note {
@@ -22,6 +18,21 @@
 
 as-split-area {
     overflow-y: hidden !important;
+}
+
+md-modal {
+    .title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .footer {
+        margin-top: 16px;
+        display: flex;
+        a {
+            margin-left: auto;
+        }
+    }
 }
 
 .tree-pane {

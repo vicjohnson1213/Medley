@@ -1,14 +1,19 @@
 {
-  "name": "markdown-editor",
-  "productName": "Markdown Editor",
-  "version": "0.0.0",
+  "name": "medley",
+  "productName": "Medley",
+  "version": "0.0.1",
   "main": "src/main/main.js",
   "scripts": {
     "ng": "ng",
     "build": "ng build --base-href ./",
     "watch": "ng build --base-href ./ --watch=true",
     "start": "ng build --base-href ./ && electron .",
-    "electron": "electron ."
+    "electron": "electron .",
+    "dist:all": "build -mwl",
+    "dist:win": "build -w",
+    "dist:mac": "build -m",
+    "dist:linux": "build -l",
+    "publish": "build -p always"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +28,7 @@
     "angular-resize-event": "^1.0.0",
     "angular-split": "^3.0.0-beta.5",
     "core-js": "^2.5.4",
+    "electron-updater": "^4.0.6",
     "highlight.js": "^9.15.6",
     "marked": "^0.6.2",
     "monaco-editor": "^0.17.0",
@@ -41,10 +47,11 @@
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "electron": "^5.0.1",
+    "electron-builder": "^20.40.2",
     "electron-reloader": "^0.2.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
-    "karma": "~3.1.1",
+    "karma": "^4.1.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
@@ -53,5 +60,18 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2"
+  },
+  "build": {
+    "appId": "com.vicjohnson1213.Medley",
+    "directories": {
+      "output": "releases"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "vicjohnson1213",
+        "repo": "Medley"
+      }
+    ]
   }
 }

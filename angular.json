@@ -69,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "notable:build"
+            "browserTarget": "medley:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "notable:build:production"
+              "browserTarget": "medley:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "notable:build"
+            "browserTarget": "medley:build"
           }
         },
         "test": {
@@ -121,7 +121,7 @@
         }
       }
     },
-    "notable-e2e": {
+    "medley-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -130,11 +130,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "notable:serve"
+            "devServerTarget": "medley:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "notable:serve:production"
+              "devServerTarget": "medley:serve:production"
             }
           }
         },
@@ -150,5 +150,5 @@
       }
     }
   },
-  "defaultProject": "markdown-editor"
+  "defaultProject": "medley"
 }

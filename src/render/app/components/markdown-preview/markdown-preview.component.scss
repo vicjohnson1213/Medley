@@ -1,6 +1,9 @@
 @import 'variables';
 
 :host {
+    all: initial;
+    all: unset;
+
     @include fancy-scroll;
 
     &::-webkit-scrollbar-thumb {

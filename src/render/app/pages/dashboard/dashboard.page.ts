@@ -31,9 +31,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     notes: Note[];
     selectedTag: string;
     activeNote: Note;
-    showModal = false;
+    showNewNoteModal = false;
     showEditMenu = false;
-    previewMode = false;
+    previewMode = true;
 
     constructor(
         private fb: FormBuilder,
@@ -66,7 +66,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
         this.subscriptions.sink = this.state.createNoteRequest.subscribe(() => {
             this.zone.run(() => {
-                this.showModal = true;
+                this.showNewNoteModal = true;
                 setTimeout(() => this.nameInput.nativeElement.focus());
             });
         });
@@ -78,8 +78,25 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        this.dismissModal();
+    @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        const key = event.key.toLowerCase();
+        let modifier;
+
+        if (process.platform === 'darwin') {
+            modifier = event.metaKey;
+        } else {
+            modifier = event.ctrlKey;
+        }
+
+        if (key === 'escape') {
+            this.dismissModals();
+        } else if (modifier && key === 's') {
+            this.togglePreview(true);
+        } else if (modifier && key === 'e') {
+            this.togglePreview(false);
+        } else if (modifier && key === 'd') {
+            this.toggleEdit();
+        }
     }
 
     get notesToDisplay(): Note[] {
@@ -90,7 +107,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         const name = this.newNoteForm.value.name;
         this.state.createNote(name);
         this.newNoteForm.reset();
-        this.showModal = false;
+        this.showNewNoteModal = false;
     }
 
     onEditorResized() {
@@ -98,14 +115,22 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
 
     toggleEdit() {
-        this.showEditMenu = !this.showEditMenu;
+        this.showEditMenu = this.activeNote ? !this.showEditMenu : false;
     }
 
-    dismissModal() {
-        this.showModal = false;
+    dismissModals() {
+        this.showNewNoteModal = false;
     }
 
     selectNote(note: Note) {
         this.state.setActiveNote(note);
+    }
+
+    togglePreview(value?: boolean) {
+        this.previewMode = value !== undefined ? value : !this.previewMode;
+        
+        if (!this.previewMode) {
+            setTimeout(() => this.editor.focus());
+        }
     }
 }

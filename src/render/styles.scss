@@ -34,6 +34,28 @@ input[type="text"] {
     }
 }
 
+
+button,
+a.button {
+    background-color: $lightPurple;
+    color: $white;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    padding: 8px 12px;
+    text-decoration: none;
+    
+    &:hover {
+        cursor: pointer;
+        background-color: $purple;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
 .toolbar {
     height: 40px;
     display: flex;
@@ -68,7 +90,8 @@ input[type="text"] {
     .segmented-button {
         display: flex;
 
-        button {
+        button,
+        a.button {
             border-radius: 0px;
 
             &:first-child {
@@ -97,13 +120,10 @@ input[type="text"] {
         }
     }
 
-    button {
+    button,
+    a.button {
         background-color: transparent;
         color: $white;
-        border: none;
-        border-radius: 4px;
-        display: flex;
-        align-content: center;
         padding: 2px 4px;
         
         &:hover {
