@@ -3,20 +3,12 @@ const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs').promises;
-const os = require('os');
 const { autoUpdater } = require("electron-updater");
 
 const menu = require('./menu');
-
-function requireUncached(module) {
-    delete require.cache[require.resolve(module)];
-    return require(module);
-}
-
-const HOME = os.homedir();
-const MEDLEY_DIR = path.join(HOME, '.medley');
-const NOTES_DIR = path.join(MEDLEY_DIR, 'notes');
-const MANIFEST_FILE = path.join(MEDLEY_DIR, 'manifest.json');
+const noteSvc = require('./note-service');
+const constants = require('./constants');
+const utils = require('./utils');
 
 let mainWindow;
 
@@ -60,6 +52,7 @@ function createMainWindow() {
     Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 
     registerIPC();
+    noteSvc.batchImportComplete.on('complete', () => getNotes());
 }
 
 function registerIPC() {
@@ -74,11 +67,12 @@ function registerIPC() {
     });
 
     ipcMain.on('saveNote', (event, note) => {
-        saveNote(note);
+        noteSvc.saveNote(note);
     });
 
     ipcMain.on('createNoteRequest', (event, name) => {
-        createNote(name);
+        noteSvc.createNote(name)
+            .then((newNote) => mainWindow.webContents.send('noteCreated', newNote));
     });
 
     ipcMain.on('deleteNoteRequest', (event, note) => {
@@ -95,7 +89,7 @@ function registerIPC() {
 }
 
 function getNotes() {
-    const manifest = requireUncached(MANIFEST_FILE);
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
     const notes = manifest.Notes.map(note => {
         return {
             Name: note.Name,
@@ -107,84 +101,42 @@ function getNotes() {
     mainWindow.webContents.send('getNotesResponse', notes);
 }
 
-function createNote(name, attempt) {
-    attempt = attempt || 0;
-
-    const manifest = requireUncached(MANIFEST_FILE);
-
-    const parts = name.split('/').map(p => p.trim());
-    const noteName = parts.pop();
-    const tag = parts.join('/');
-    const filename = noteName + (attempt > 0 ? ` (${attempt})` : '');
-    const fullName = `${filename}.md`;
-    const filepath = path.join(NOTES_DIR, fullName);
-
-    const newNote = {
-        Name: noteName,
-        Path: filepath,
-        Tags: tag.length ? [tag] : []
-    };
-
-    manifest.Notes.push(newNote);
-
-    fs.writeFile(filepath, '', { flag: 'wx' })
-        .then(() => {
-            mainWindow.webContents.send('noteCreated', newNote);
-            return fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
-        }).catch(err => {
-            if (err.code === 'EEXIST') {
-                return createNote(name, attempt + 1);
-            }
-
-            console.error(err);
-        });
-}
 
 function deleteNote(note) {
-    const manifest = requireUncached(MANIFEST_FILE);
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
     const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
     manifest.Notes.splice(idx, 1);
-    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2))
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2))
         .then(() => fs.unlink(note.Path));
 }
 
 function addTagToNote(tag, note) {
-    const manifest = requireUncached(MANIFEST_FILE);
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
     const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
     wholeNote.Tags.push(tag);
-    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
-}
-
-function saveNote(note) {
-    const content = note.Content;
-    delete note.Content;
-    const manifest = requireUncached(MANIFEST_FILE);
-    const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
-    manifest.Notes.splice(idx, 1, note);
-    fs.writeFile(note.Path, content);
-    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 
 function deleteTagFromNote(tag, note) {
-    const manifest = requireUncached(MANIFEST_FILE);
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
     const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
     const tagIdx = wholeNote.Tags.indexOf(tag);
     wholeNote.Tags.splice(tagIdx, 1);
-    fs.writeFile(MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 
 function verifySetup() {
-    return fs.mkdir(MEDLEY_DIR)
+    return fs.mkdir(constants.MEDLEY_DIR)
         .then(() => Promise.all([verifyManifest(), verifyNotesDir()]))
         .catch(() => Promise.all([verifyManifest(), verifyNotesDir()]))
         .catch(() => {}); 
 
     function verifyManifest() {
         const manifestTemplate = JSON.stringify(require('./manifest-template'), ' ', 2);
-        return fs.writeFile(MANIFEST_FILE, manifestTemplate, { flag: 'wx' });
+        return fs.writeFile(constants.MANIFEST_FILE, manifestTemplate, { flag: 'wx' });
     }
 
     function verifyNotesDir() {
-        return fs.mkdir(NOTES_DIR);
+        return fs.mkdir(constants.NOTES_DIR);
     }
 }

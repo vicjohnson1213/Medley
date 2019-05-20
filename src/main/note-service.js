@@ -1,0 +1,114 @@
+const { dialog } = require('electron');
+const path = require('path');
+const fs = require('fs').promises;
+const frontMatter = require('front-matter');
+const EventEmitter = require('events').EventEmitter;
+
+const constants = require('./constants');
+const utils = require('./utils');
+
+const batchImportComplete = new EventEmitter();
+module.exports.batchImportComplete = batchImportComplete;
+
+module.exports.importFromNotable = importFromNotable;
+function importFromNotable() {
+    return new Promise((resolve, reject) => {
+        dialog.showOpenDialog({
+            defaultPath: constants.HOME,
+            properties: ['openDirectory', 'showHiddenFiles']
+        }, (notableDir) => {
+            const notesDir = path.join(notableDir[0], 'notes');
+            fs.readdir(notesDir)
+                .then(notes => {
+                    const notePaths = notes.map(note => path.join(notesDir, note));
+                    return Promise.all(notePaths.map(notePath => fs.readFile(notePath, 'utf8')));
+                })
+                .then(notes => {
+                    notes = notes.map(note => {
+                        const content = frontMatter(note);
+                        return {
+                            Name: content.attributes.title,
+                            Path: `${path.join(constants.NOTES_DIR, content.attributes.title)}.md`,
+                            Tags: content.attributes.tags,
+                            Content: content.body
+                        };
+                    });
+    
+                    batchAdd(notes)
+                        .then(() => {
+                            batchImportComplete.emit('complete');
+                            resolve();
+                        });
+                })
+                .catch(err => reject(err));
+        });
+    })
+}
+
+function batchAdd(notes) {
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const existingPaths = manifest.Notes.map(n => n.Path);
+
+    notes.forEach(note => {
+        const content = note.Content;
+        delete note.Content;
+
+        let attempt = 0;
+        while (existingPaths.includes(note.Path)) {
+            const filename = note.Name + (attempt > 0 ? ` (${attempt})` : '') + '.md';
+            note.Path = path.join(constants.NOTES_DIR, filename);
+            attempt++;
+        }
+
+        existingPaths.push(note.Path);
+        manifest.Notes.push(note);
+        fs.writeFile(note.Path, content);
+    });
+
+    return fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+module.exports.saveNote = saveNote;
+function saveNote(note) {
+    const content = note.Content;
+    delete note.Content;
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
+    manifest.Notes.splice(idx, 1, note);
+    fs.writeFile(note.Path, content);
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+module.exports.createNote = createNote;
+function createNote(name) {
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const existingPaths = manifest.Notes.map(n => n.Path);
+
+    const parts = name.split('/').map(p => p.trim());
+    const noteName = parts.pop();
+    const tag = parts.join('/');
+    let filename = noteName;
+    let fullName = `${filename}.md`;
+    let filepath = path.join(constants.NOTES_DIR, fullName);
+
+    let attempt = 0;
+    while (existingPaths.includes(filepath)) {
+        filename = note.Name + (attempt > 0 ? ` (${attempt})` : '');
+        fullName = `${filename}.md`;
+        filepath = path.join(constants.NOTES_DIR, fullName);
+        attempt++;
+    }
+
+    const newNote = {
+        Name: noteName,
+        Path: filepath,
+        Tags: tag.length ? [tag] : []
+    };
+
+    manifest.Notes.push(newNote);
+
+    return Promise.all([
+        fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2)),
+        fs.writeFile(filepath, '', { flag: 'wx' })
+    ]).then(() => newNote);
+}

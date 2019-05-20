@@ -1,6 +1,8 @@
 const path = require('path');
 const url = require('url');
 
+const noteSvc = require('./note-service');
+
 function createMenu(app, mainWindow) {
     const template = [{
         label: 'File',
@@ -10,6 +12,13 @@ function createMenu(app, mainWindow) {
                 accelerator: 'CmdOrCtrl+N',
                 click: () => {
                     mainWindow.webContents.send('createNoteRequest');
+                }
+            },
+            { type: 'separator' },
+            {
+                label: 'Import from Notable',
+                click: () => {
+                    noteSvc.importFromNotable();
                 }
             }
         ]
