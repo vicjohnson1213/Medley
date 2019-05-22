@@ -1,9 +1,6 @@
 @import 'variables';
 
 :host {
-    all: initial;
-    all: unset;
-
     @include fancy-scroll;
 
     &::-webkit-scrollbar-thumb {
@@ -12,7 +9,10 @@
 
     overflow-x: hidden;
     overflow-y: scroll;
-    padding: 8px 40px;
+    padding: 8px 40px 24px 40px;
+    display: block;
+    height: 100%;
+    background-color: $white;
 
     &::ng-deep {
         color: $black;
@@ -28,7 +28,7 @@
         a {
             display: inline-block;
             text-decoration: none;
-            color: $purple;
+            color: $lightPurple;
         
             &:visited {
                 color: $purple;
@@ -38,6 +38,16 @@
             &:visited:hover {
                 color: $darkerPurple;
             }
+        }
+
+        hr {
+            height: 2px;
+            border: none;
+            background-color: $lighterGray;
+        }
+
+        img {
+            max-width: 100%;
         }
 
         code {
@@ -98,8 +108,11 @@
         tbody tr:nth-child(odd) th {
             background-color: $lightestGray;
         }
-        
-        /* Blockquotes */
+
+        ol,
+        ul {
+            padding-inline-start: 32px;
+        }
         
         blockquote {
             margin: 0;

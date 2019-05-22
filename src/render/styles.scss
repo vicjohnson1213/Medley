@@ -13,6 +13,10 @@ body {
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     background-color: $white;
+
+    ::selection {
+        background-color: $lightestPurple;
+    }
 }
 
 input[type="text"] {
@@ -36,6 +40,7 @@ input[type="text"] {
 
 button,
 a.button {
+    @include no-select;
     background-color: $lightPurple;
     color: $white;
     border: none;

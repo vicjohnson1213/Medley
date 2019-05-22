@@ -24,6 +24,7 @@
             <div class="toolbar">
                 <div class="title">{{ activeNote?.Name }}</div>
                 <div class="right group" [class.expanded]="activeNote" *ngIf="activeNote">
+                    <!-- <button><span class="material-icons">attach_file</span></button> -->
                     <div class="segmented-button">
                         <button [class.active]="!previewMode" (click)="togglePreview(false)">
                                 <span class="material-icons">code</span>
@@ -38,9 +39,11 @@
                     </button>
                 </div>
             </div>
-            <md-editor *ngIf="!previewMode" [resize$]="resize$" (resized)="onEditorResized()"></md-editor>
-            <md-markdown-preview *ngIf="activeNote && previewMode"></md-markdown-preview>
-            <div class="empty" *ngIf="!activeNote">Nothing to see here!</div>
+            <div class="content">
+                <md-editor [resize$]="resize$" (resized)="onEditorResized()"></md-editor>
+                <md-markdown-preview *ngIf="activeNote && previewMode"></md-markdown-preview>
+                <div class="empty" *ngIf="!activeNote">Nothing to see here!</div>
+            </div>
         </as-split-area>
 
     </as-split>

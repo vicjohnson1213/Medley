@@ -1,8 +1,8 @@
 import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { IpcRenderer } from 'electron';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Observer } from 'rxjs';
 
-import { Note } from '../models';
+import { Note, Config } from '../models';
 
 @Injectable()
 export class AppState {
@@ -19,9 +19,12 @@ export class AppState {
 
     createNoteRequest = new EventEmitter();
     updateAvailable = new EventEmitter();
+    config: Config;
 
     constructor(private zone: NgZone) {
         this.ipc = (<any>window).require('electron').ipcRenderer;
+
+
 
         this.ipc.on('getNotesResponse', (events, notes) => {
             this.zone.run(() => {
@@ -53,6 +56,19 @@ export class AppState {
 
         this.ipc.on('updateAvailable', () => {
             this.updateAvailable.emit();
+        });
+    }
+
+    loadConfig(): Observable<void> {
+        return Observable.create((observer: Observer<void>) => {
+            this.ipc.on('getConfigResponse', (event, config) => {
+                console.log('complete', config);
+                this.config = config;
+                observer.next()
+                observer.complete();
+            });
+
+            this.ipc.send('getConfig');
         });
     }
 

@@ -2,17 +2,16 @@
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
 const url = require('url');
-const fs = require('fs').promises;
 const { autoUpdater } = require("electron-updater");
 
 const menu = require('./menu');
 const noteSvc = require('./note-service');
 const utils = require('./utils');
+const constants = require('./constants');
 
 let mainWindow;
 
 app.on('ready', () => {
-    console.log(app.getVersion());
     autoUpdater.checkForUpdatesAndNotify();
     utils.verifySetup().then(createMainWindow);
 });
@@ -52,10 +51,19 @@ function createMainWindow() {
     Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 
     registerIPC();
+
+       
 }
 
 function registerIPC() {
     noteSvc.batchImportComplete.on('complete', () => getNotes());
+
+    ipcMain.on('getConfig', () => {
+        const medleyDir = constants.MEDLEY_DIR.split(path.sep).join('/');
+        mainWindow.webContents.send('getConfigResponse', {
+            RootDirectory: medleyDir
+        });
+    });
 
     ipcMain.on('getNotes', () => {
         noteSvc.getNotes()

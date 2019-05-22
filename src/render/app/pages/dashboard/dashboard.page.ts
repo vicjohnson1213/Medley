@@ -68,7 +68,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
             this.zone.run(() => this.showCreateNote());
         });
 
-        this.state.initNotes();
+        this.subscriptions.sink = this.state.loadConfig().subscribe(() => {
+            this.state.initNotes();
+        });
     }
 
     ngOnDestroy() {

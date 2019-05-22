@@ -115,10 +115,24 @@ md-modal {
         }
     }
 
-    md-editor {
-        margin-top: 8px;
-        margin-left: 8px;
+    .content {
         flex: 1 1 auto;
+        overflow: hidden;
+        position: relative;
+
+        md-editor {
+            margin-top: 8px;
+            margin-left: 8px;
+            height: 100%;
+        }
+
+        md-markdown-preview {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
     }
 
     .empty {
