@@ -59,7 +59,7 @@ export class AppState {
     setActiveNote(note?: Note) {
         this.activeNoteSub$.next(note);
         if (note) {
-            this.ipc.send('loadNote', note.Path);
+            this.ipc.send('loadNote', note);
         }
     }
 

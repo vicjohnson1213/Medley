@@ -25,10 +25,10 @@
                 <div class="title">{{ activeNote?.Name }}</div>
                 <div class="right group" [class.expanded]="activeNote" *ngIf="activeNote">
                     <div class="segmented-button">
-                        <button [class.active]="!previewMode" (click)="togglePreview()">
+                        <button [class.active]="!previewMode" (click)="togglePreview(false)">
                                 <span class="material-icons">code</span>
                         </button>
-                        <button [class.active]="previewMode" (click)="togglePreview()">
+                        <button [class.active]="previewMode" (click)="togglePreview(true)">
                                 <span class="material-icons">photo</span>
                         </button>
                     </div>

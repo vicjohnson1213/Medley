@@ -68,6 +68,28 @@ function batchAdd(notes) {
     return fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 
+
+module.exports.getNotes = getNotes;
+function getNotes() {
+    return new Promise((resolve) => {
+        const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+        const notes = manifest.Notes.map(note => {
+            return {
+                Name: note.Name,
+                Path: note.Path,
+                Tags: note.Tags
+            }
+        });
+    
+        resolve(notes);
+    });
+}
+
+module.exports.loadNote = loadNote;
+function loadNote(note) {
+    return fs.readFile(note.Path, 'utf-8');
+}
+
 module.exports.saveNote = saveNote;
 function saveNote(note) {
     const content = note.Content;
@@ -76,6 +98,15 @@ function saveNote(note) {
     const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
     manifest.Notes.splice(idx, 1, note);
     fs.writeFile(note.Path, content);
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
+}
+
+
+module.exports.addTagToNote = addTagToNote;
+function addTagToNote(tag, note) {
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
+    wholeNote.Tags.push(tag);
     fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 
@@ -111,4 +142,22 @@ function createNote(name) {
         fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2)),
         fs.writeFile(filepath, '', { flag: 'wx' })
     ]).then(() => newNote);
+}
+
+module.exports.deleteNote = deleteNote
+function deleteNote(note) {
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const idx = manifest.Notes.findIndex(n => n.Path === note.Path);
+    manifest.Notes.splice(idx, 1);
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2))
+        .then(() => fs.unlink(note.Path));
+}
+
+module.exports.deleteTagFromNote = deleteTagFromNote;
+function deleteTagFromNote(tag, note) {
+    const manifest = utils.requireUncached(constants.MANIFEST_FILE);
+    const wholeNote = manifest.Notes.find(n => n.Path === note.Path);
+    const tagIdx = wholeNote.Tags.indexOf(tag);
+    wholeNote.Tags.splice(tagIdx, 1);
+    fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }

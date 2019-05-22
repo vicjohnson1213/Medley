@@ -32,14 +32,6 @@ $toolbarShadow: 0px 2px 6px -2px $darkerPurple;
     @include hidden;
 }
 
-@mixin display-none {
-    display: none;
-}
-
-.display-none {
-    @include display-none;
-}
-
 @mixin fancy-scroll {
     overflow-y: auto;
 
