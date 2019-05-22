@@ -65,10 +65,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.sink = this.state.createNoteRequest.subscribe(() => {
-            this.zone.run(() => {
-                this.showNewNoteModal = true;
-                setTimeout(() => this.nameInput.nativeElement.focus());
-            });
+            this.zone.run(() => this.showCreateNote());
         });
 
         this.state.initNotes();
@@ -101,6 +98,17 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     get notesToDisplay(): Note[] {
         return this.notesForTag(this.selectedTag, this.notes);
+    }
+
+    showCreateNote(initialTag?: string) {
+        this.showNewNoteModal = true;
+        if (initialTag && initialTag !== '_All' && initialTag !== '_Untagged') {
+            this.newNoteForm.patchValue({
+                name: `${initialTag}/`
+            });
+        }
+
+        setTimeout(() => this.nameInput.nativeElement.focus());
     }
 
     createNote() {

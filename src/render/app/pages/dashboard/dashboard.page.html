@@ -1,16 +1,19 @@
 <div class="container">
     <as-split unit="pixel" direction="horizontal" gutterSize="1">
 
-        <as-split-area size="220" minSize="100" maxSize="400" class="tree-pane">
+        <as-split-area size="250" minSize="100" maxSize="400" class="tree-pane">
             <div class="toolbar">
                 <div class="title">Groups</div>
             </div>
             <md-tag-tree></md-tag-tree>
         </as-split-area>
 
-        <as-split-area size="220" minSize="100" maxSize="400" class="notes-pane">
+        <as-split-area size="250" minSize="100" maxSize="400" class="notes-pane">
             <div class="toolbar">
-                <div class="title">Notes</div>
+                <div class="title">{{ selectedTag | cleanTag }}</div>
+                <div class="right">
+                    <button (click)="showCreateNote(selectedTag)"><span class="material-icons">add</span></button>
+                </div>
             </div>
             <div class="note-list">
                 <div class="note" [class.active]="note === activeNote" *ngFor="let note of (notesToDisplay | alphabeticalBy:'Name')" (click)="selectNote(note)">{{ note.Name }}</div>
