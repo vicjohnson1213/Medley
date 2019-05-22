@@ -24,8 +24,8 @@ app.on('activate', () => {
 
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 700,
+        width: 1200,
+        height: 800,
         title: 'Medley',
         webPreferences: {
             nodeIntegration: true
