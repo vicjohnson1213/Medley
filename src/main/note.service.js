@@ -70,7 +70,6 @@ function batchAdd(notes) {
     return fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2));
 }
 
-
 module.exports.getNotes = getNotes;
 function getNotes() {
     return new Promise((resolve) => {

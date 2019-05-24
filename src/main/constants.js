@@ -7,6 +7,7 @@ define('MEDLEY_DIR', path.join(module.exports.USER_DATA, 'medley'));
 define('NOTES_DIR', path.join(module.exports.MEDLEY_DIR, 'notes'));
 define('IMAGES_DIR', path.join(module.exports.MEDLEY_DIR, 'images'));
 define('MANIFEST_FILE', path.join(module.exports.MEDLEY_DIR, 'manifest.json'));
+define('SETTINGS_FILE', path.join(module.exports.MEDLEY_DIR, 'preferences.json'))
 
 function define(name, value) {
     Object.defineProperty(exports, name, {

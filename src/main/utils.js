@@ -1,5 +1,4 @@
-
-const fs = require('fs').promises;
+const fs = require('fs');
 
 const constants = require('./constants');
 
@@ -10,21 +9,53 @@ module.exports.requireUncached = (module) => {
 
 module.exports.verifySetup = verifySetup;
 function verifySetup() {
-    return fs.mkdir(constants.MEDLEY_DIR)
-        .then(() => Promise.all([verifyManifest(), verifyNotesDir(), verifyImagesDir()]))
-        .catch(() => Promise.all([verifyManifest(), verifyNotesDir(), verifyImagesDir()]))
-        .catch(() => {}); 
+    return new Promise((resolve) => {
+        fs.mkdir(constants.MEDLEY_DIR, () => {
+            verifyAll().then(resolve);
+        });
+    });
+    
+
+    function verifyAll() {
+        return Promise.all([
+            verifyManifest(),
+            verifySettings(),
+            verifyNotesDir(),
+            verifyImagesDir()
+        ]);
+    }
 
     function verifyManifest() {
-        const manifestTemplate = JSON.stringify(require('./manifest-template'), ' ', 2);
-        return fs.writeFile(constants.MANIFEST_FILE, manifestTemplate, { flag: 'wx' });
+        return new Promise(resolve => {
+            const manifestTemplate = JSON.stringify(require('./templates/manifest-template'), ' ', 2);
+            fs.writeFile(constants.MANIFEST_FILE, manifestTemplate, { flag: 'wx' }, (err) => {
+                resolve();
+            });
+        })
+    }
+
+    function verifySettings() {
+        return new Promise(resolve => {
+            const settingsTemplate = JSON.stringify(require('./templates/settings.template'), ' ', 2);
+            fs.writeFile(constants.SETTINGS_FILE, settingsTemplate, { flag: 'wx' }, (err) => {
+                resolve();
+            });
+        });
     }
 
     function verifyNotesDir() {
-        return fs.mkdir(constants.NOTES_DIR);
+        return new Promise(resolve => {
+            fs.mkdir(constants.NOTES_DIR, () => {
+                resolve();
+            });
+        });
     }
 
     function verifyImagesDir() {
-        return fs.mkdir(constants.IMAGES_DIR);
+        return new Promise(resolve => {
+            fs.mkdir(constants.IMAGES_DIR, () => {
+                resolve();
+            });
+        });
     }
 }

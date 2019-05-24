@@ -1,4 +1,4 @@
-const { manifestVersion } = require('../../package.json');
+const { manifestVersion } = require('../../../package.json');
 
 const template = {
     Version: manifestVersion,

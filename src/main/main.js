@@ -5,7 +5,7 @@ const url = require('url');
 const { autoUpdater } = require("electron-updater");
 
 const menu = require('./menu');
-const noteSvc = require('./note-service');
+const noteSvc = require('./note.service');
 const utils = require('./utils');
 const constants = require('./constants');
 

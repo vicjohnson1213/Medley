@@ -1,7 +1,8 @@
 const path = require('path');
 const url = require('url');
 
-const noteSvc = require('./note-service');
+const noteSvc = require('./note.service');
+const settingsSvc = require('./settings.service');
 
 function createMenu(app, mainWindow) {
     const template = [{
@@ -19,6 +20,12 @@ function createMenu(app, mainWindow) {
                 label: 'Import from Notable',
                 click: () => {
                     noteSvc.importFromNotable();
+                }
+            },
+            {
+                label: 'Export',
+                click: () => {
+                    
                 }
             }
         ]
@@ -38,16 +45,6 @@ function createMenu(app, mainWindow) {
         label: 'View',
         submenu: [
             {
-                label: 'Reload',
-                accelerator: 'CmdOrCtrl+R',
-                click:  (item, focusedWindow) => {
-                    mainWindow.loadURL(url.format({
-                        pathname: path.join(__dirname, '../../dist/index.html'),
-                        protocol: 'file',
-                        slashes: true
-                    }));
-                }
-            }, {
                 type: 'separator'
             }, { 
                 role: 'resetzoom'
@@ -71,10 +68,11 @@ function createMenu(app, mainWindow) {
             }
         ]
     }, {
-        label: 'Dev',
+        label: 'Developer',
         submenu: [{
-            label: 'Reload UI',
-            click: () => {
+            label: 'Reload',
+            accelerator: 'CmdOrCtrl+R',
+            click:  (item, focusedWindow) => {
                 mainWindow.loadURL(url.format({
                     pathname: path.join(__dirname, '../../dist/index.html'),
                     protocol: 'file',
@@ -100,12 +98,32 @@ function createMenu(app, mainWindow) {
       ]
     }];
 
+    if (process.platform !== 'darwin') {
+        const edit = template.find(m => m.label === 'Edit');
+        edit.push({ type: 'separator' });
+        edit.push({
+            label: 'Preferences',
+            accelerator: 'CmdOrCtrl+,',
+            click: () => {
+                settingsSvc.editSettings();
+            }
+        });
+    }
+
     if (process.platform === 'darwin') {
         const name = app.getName();
         template.unshift({
             label: name,
             submenu: [
                 { role: 'about' },
+                { type: 'separator' },
+                {
+                    label: 'Preferences',
+                    accelerator: 'CmdOrCtrl+,',
+                    click: () => {
+                        settingsSvc.editSettings();
+                    }
+                },
                 { type: 'separator' },
                 { role: 'services', submenu: [] },
                 { type: 'separator' },
