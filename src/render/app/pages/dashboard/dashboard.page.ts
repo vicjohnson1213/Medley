@@ -120,6 +120,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         this.showNewNoteModal = false;
     }
 
+    attachImage() {
+        this.state.attachImage();
+    }
+
     onEditorResized() {
         this.resizeEmitter.emit()
     }

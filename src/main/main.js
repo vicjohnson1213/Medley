@@ -51,8 +51,6 @@ function createMainWindow() {
     Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 
     registerIPC();
-
-       
 }
 
 function registerIPC() {
@@ -84,6 +82,11 @@ function registerIPC() {
         noteSvc.createNote(name)
             .then((newNote) => mainWindow.webContents.send('noteCreated', newNote))
             .catch(() => mainWindow.webContents.send('errorCreatingNote'));
+    });
+
+    ipcMain.on('attachImage', () => {
+        noteSvc.attachImage()
+            .then((filepath) => mainWindow.webContents.send('imageAttached', filepath));
     });
 
     ipcMain.on('deleteNoteRequest', (event, note) => {

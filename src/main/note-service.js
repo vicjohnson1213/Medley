@@ -1,6 +1,8 @@
 const { dialog } = require('electron');
 const path = require('path');
-const fs = require('fs').promises;
+const rawFs = require('fs');
+const fs = rawFs.promises;
+const fsConstants = rawFs.constants;
 const frontMatter = require('front-matter');
 const EventEmitter = require('events').EventEmitter;
 
@@ -142,6 +144,21 @@ function createNote(name) {
         fs.writeFile(constants.MANIFEST_FILE, JSON.stringify(manifest, ' ', 2)),
         fs.writeFile(filepath, '', { flag: 'wx' })
     ]).then(() => newNote);
+}
+
+module.exports.attachImage = attachImage;
+function attachImage() {
+    return new Promise((resolve, reject) => {
+        dialog.showOpenDialog({ 
+            defaultPath: constants.HOME,
+            properties: ['openFile']
+        }, (imagePath) => {
+            const filename = path.basename(imagePath[0]).replace(/\s+/g, '-');
+            const newPath = path.join(constants.IMAGES_DIR, filename);
+            fs.copyFile(imagePath[0], newPath, fsConstants.COPYFILE_EXCL)
+                .then(() => resolve(filename));
+        });
+    });
 }
 
 module.exports.deleteNote = deleteNote

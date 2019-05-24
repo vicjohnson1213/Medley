@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2, OnDestroy } from '@angular/core';
 import { SubSink } from 'subsink';
 import * as marked from 'marked';
 import hljs from 'highlight.js';
@@ -16,7 +16,6 @@ export class MarkdownPreviewComponent implements OnInit, OnDestroy {
 
     constructor(
         private renderer: Renderer2,
-        private change: ChangeDetectorRef,
         private state: AppState) {}
 
     ngOnInit() {
@@ -38,14 +37,6 @@ export class MarkdownPreviewComponent implements OnInit, OnDestroy {
 
             const rendered = marked(content);
             this.renderer.setProperty(this.target.nativeElement, 'innerHTML', rendered);
-
-            // const images = <HTMLElement[]>this.target.nativeElement.querySelectorAll('img');
-
-            // images.forEach((img) => {
-            //     img.setAttribute('src', `${this.state.config.RootDirectory}/images/roses-pxl.jpg`);
-            // });
-
-            // this.change.detectChanges();
         });
     }
 

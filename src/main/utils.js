@@ -11,8 +11,8 @@ module.exports.requireUncached = (module) => {
 module.exports.verifySetup = verifySetup;
 function verifySetup() {
     return fs.mkdir(constants.MEDLEY_DIR)
-        .then(() => Promise.all([verifyManifest(), verifyNotesDir()]))
-        .catch(() => Promise.all([verifyManifest(), verifyNotesDir()]))
+        .then(() => Promise.all([verifyManifest(), verifyNotesDir(), verifyImagesDir()]))
+        .catch(() => Promise.all([verifyManifest(), verifyNotesDir(), verifyImagesDir()]))
         .catch(() => {}); 
 
     function verifyManifest() {
@@ -22,5 +22,9 @@ function verifySetup() {
 
     function verifyNotesDir() {
         return fs.mkdir(constants.NOTES_DIR);
+    }
+
+    function verifyImagesDir() {
+        return fs.mkdir(constants.IMAGES_DIR);
     }
 }

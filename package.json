@@ -8,6 +8,7 @@
     "url": "https://vicjohnson1213.github.io"
   },
   "version": "0.0.1",
+  "manifestVersion": "1.0.0",
   "main": "src/main/main.js",
   "scripts": {
     "ng": "ng",

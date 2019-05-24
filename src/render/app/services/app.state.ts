@@ -106,6 +106,10 @@ export class AppState {
         this.ipc.send('createNoteRequest', name);
     }
 
+    attachImage() {
+        this.ipc.send('attachImage');
+    }
+
     deleteNote(note: Note) {
         let notes = this.notesSub$.value;
         const idx = notes.indexOf(note);
