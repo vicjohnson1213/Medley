@@ -31,7 +31,7 @@ function importFromNotable() {
                         return {
                             Name: content.attributes.title,
                             Path: `${path.join(constants.NOTES_DIR, content.attributes.title)}.md`,
-                            Tags: content.attributes.tags,
+                            Tags: content.attributes.tags || [],
                             Content: content.body
                         };
                     });
