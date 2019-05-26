@@ -35,7 +35,7 @@ function importFromNotable() {
                             Content: content.body
                         };
                     });
-    
+
                     batchAdd(notes)
                         .then(() => {
                             batchImportComplete.emit('complete');

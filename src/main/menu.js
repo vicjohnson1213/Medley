@@ -100,8 +100,8 @@ function createMenu(app, mainWindow) {
 
     if (process.platform !== 'darwin') {
         const edit = template.find(m => m.label === 'Edit');
-        edit.push({ type: 'separator' });
-        edit.push({
+        edit.submenu.push({ type: 'separator' });
+        edit.submenu.push({
             label: 'Preferences',
             accelerator: 'CmdOrCtrl+,',
             click: () => {
