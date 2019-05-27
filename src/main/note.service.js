@@ -119,14 +119,14 @@ function createNote(name) {
     const parts = name.split('/').map(p => p.trim());
     const noteName = parts.pop();
     const tag = parts.join('/');
-    let filename = noteName;
-    let fullName = `${filename}.md`;
+    let fileName = noteName;
+    let fullName = `${fileName}.md`;
     let filepath = path.join(constants.NOTES_DIR, fullName);
 
     let attempt = 0;
     while (existingPaths.includes(filepath)) {
-        filename = note.Name + (attempt > 0 ? ` (${attempt})` : '');
-        fullName = `${filename}.md`;
+        fileName = note.Name + (attempt > 0 ? ` (${attempt})` : '');
+        fullName = `${fileName}.md`;
         filepath = path.join(constants.NOTES_DIR, fullName);
         attempt++;
     }

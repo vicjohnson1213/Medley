@@ -62,7 +62,6 @@ export class AppState {
     loadConfig(): Observable<void> {
         return Observable.create((observer: Observer<void>) => {
             this.ipc.on('getConfigResponse', (event, config) => {
-                console.log('complete', config);
                 this.config = config;
                 observer.next()
                 observer.complete();
