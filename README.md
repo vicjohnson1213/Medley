@@ -1,4 +1,4 @@
-## Medley
+# Medley
 
 > A tag-based note taking app using Markdown for formatting.
 
@@ -25,11 +25,20 @@ You can add a tag right off the bat by entering the tag in the "New Note" prompt
 
 ### Adding a Tag to a Note
 
-To add a tag, follow these quick steps:
+To add a tag, follow these steps:
 
 1. Open the "Details" pane (`...` or `Ctrl/Cmd + D`)
 1. Enter a new tag in the "Add a tag" field (e.g. `School/Chemistry`)
 1. Press `Enter`
+
+### Attachments
+
+To attach an image, follow these steps:
+
+1. Select the image you want to attach with the paperclip button
+1. Reference your image with `![alt text](@image/your-image.png)`
+
+*Note:* Any whitespace in image names will be converted to `-` (e.g. `your image.png` -> `your-image.png`)
 
 ## Acknowledgments
 
