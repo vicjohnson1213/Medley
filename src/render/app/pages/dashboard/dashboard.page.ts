@@ -102,11 +102,11 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         return this.notesForTag(this.selectedTag, this.notes);
     }
 
-    showCreateNote(initialTag?: string) {
+    showCreateNote() {
         this.showNewNoteModal = true;
-        if (initialTag && initialTag !== '_All' && initialTag !== '_Untagged') {
+        if (this.selectedTag && this.selectedTag !== '_All' && this.selectedTag !== '_Untagged') {
             this.newNoteForm.patchValue({
-                name: `${initialTag}/`
+                name: `${this.selectedTag}/`
             });
         }
 

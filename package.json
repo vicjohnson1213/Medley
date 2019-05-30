@@ -1,7 +1,7 @@
 {
   "name": "medley",
   "productName": "Medley",
-  "description": "A note taking app based on markdown.",
+  "description": "A tag-based note taking app using Markdown for formatting.",
   "author": {
     "name": "Victor Johnson",
     "email": "vicjohnson1213@gmail.com",
@@ -73,6 +73,17 @@
     "appId": "com.vicjohnson1213.Medley",
     "directories": {
       "output": "releases"
+    }, 
+    "mac": {
+      "icon": "build/icon-512.png",
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "${productName} Setup.${ext}"
+    },
+    "nsis": {
+      "uninstallDisplayName": "${productName}"
     },
     "publish": [
       {
