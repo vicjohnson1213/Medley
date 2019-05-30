@@ -1,54 +1,58 @@
-import { Component, forwardRef, Inject, Input, NgZone } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, AfterViewInit, NgZone, OnDestroy, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { fromEvent, Observable, merge, of } from 'rxjs';
+import { Subscription, merge, fromEvent, Observable, of } from 'rxjs';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+import { Command } from 'monaco-editor/esm/vs/editor/browser/editorExtensions.js';
 
-import { BaseEditor } from './base-editor.component';
-import { NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from './config';
-import { NgxEditorModel } from './types';
 import { LightTheme } from './light.theme';
 import { MarkdownImproved } from './markdown-improved';
 
 @Component({
-    selector: 'ngx-monaco-editor',
-    template: '<div class="editor-container" #editorContainer></div>',
-    styles: [],
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => EditorComponent),
-        multi: true
-    }]
+    selector: 'md-monaco-editor',
+    templateUrl: './monaco-editor.component.html',
+    styleUrls: ['./monaco-editor.component.scss'],
+    providers: [
+        { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MonacoEditorComponent), multi: true }
+    ]
 })
-export class EditorComponent extends BaseEditor implements ControlValueAccessor {
-    private _value: string = '';
+export class MonacoEditorComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
+    private _value = '';
+    private _editor: monaco.editor.IStandaloneCodeEditor;
+    private _windowResizeSubscription: Subscription;
+
+    @ViewChild('editorContainer') _editorContainer: ElementRef;
+    @Input() resize$: Observable<void> = of();
+    @Input() options: monaco.editor.IEditorOptions;
+    @Input() keybindingOverrides: { [command: string]: false };
 
     propagateChange = (_: any) => {};
     onTouched = () => {};
 
-    @Input() resize$: Observable<void> = of();
+    constructor(private zone: NgZone) {}
 
-    @Input('model')
-    set model(model: NgxEditorModel) {
-        this.options.model = model;
-        if (this._editor) {
-            this._editor.dispose();
-            this.initMonaco(this.options);
-        }
+    ngAfterViewInit() {
+        (<any>window).amdRequire(['vs/editor/editor.main'], () => {
+            this.initMonaco();
+            this.updateKeybinds();
+        });
     }
 
-    constructor(
-        private zone: NgZone,
-        @Inject(NGX_MONACO_EDITOR_CONFIG) private editorConfig: NgxMonacoEditorConfig) {
-        super(editorConfig);
+    ngOnDestroy() {
+        if (this._windowResizeSubscription) {
+            this._windowResizeSubscription.unsubscribe();
+        }
+
+        if (this._editor) {
+            this._editor.dispose();
+            this._editor = null;
+        }
     }
 
     writeValue(value: any): void {
         this._value = value || '';
-        // Fix for value change while dispose in process.
-        setTimeout(() => {
-            if (this._editor && !this.options.model) {
-                this._editor.setValue(this._value);
-            }
-        });
+        if (this._editor) {
+            this._editor.setValue(this._value);
+        }
     }
 
     registerOnChange(fn: any): void {
@@ -59,35 +63,25 @@ export class EditorComponent extends BaseEditor implements ControlValueAccessor 
         this.onTouched = fn;
     }
 
-    protected initMonaco(options: any): void {
-        const monaco = (<any>window).monaco;
-        const hasModel = !!options.model;
-
-        if (hasModel) {
-            const model = monaco.editor.getModel(options.model.uri || '');
-            if(model) {
-                options.model = model;
-                options.model.setValue(this._value);
-            } else {
-                options.model = monaco.editor.createModel(options.model.value, options.model.language, options.model.uri);
-            }
+    focus() {
+        if (this._editor) {
+            this._editor.focus();
         }
+    }
+
+    private initMonaco() {
+        const monaco = (<any>window).monaco;
 
         monaco.editor.defineTheme('light-theme', LightTheme);
         monaco.editor.setTheme('light-theme');
         monaco.languages.register({ id: 'markdown-improved' });
-        monaco.languages.setMonarchTokensProvider('markdown-improved', MarkdownImproved);
+        monaco.languages.setMonarchTokensProvider('markdown-improved', <monaco.languages.IMonarchLanguage>MarkdownImproved);
 
-        this._editor = monaco.editor.create(this._editorContainer.nativeElement, options);
+        this._editor = monaco.editor.create(this._editorContainer.nativeElement, this.options);
 
-        if (!hasModel) {
-            this._editor.setValue(this._value);
-        }
-
-        this._editor.onDidChangeModelContent((e: any) => {
+        this._editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) => {
             const value = this._editor.getValue();
             this.propagateChange(value);
-            // value is not propagated to parent when executing outside zone.
             this.zone.run(() => this._value = value);
         });
 
@@ -95,16 +89,22 @@ export class EditorComponent extends BaseEditor implements ControlValueAccessor 
             this.onTouched();
         });
 
-        // refresh layout on resize event.
         if (this._windowResizeSubscription) {
             this._windowResizeSubscription.unsubscribe();
         }
 
         this._windowResizeSubscription = merge(
             fromEvent(window, 'resize'),
-            merge(this.resize$)
+            this.resize$
         ).subscribe(() => this._editor.layout());
+    }
 
-        this.onInit.emit(this._editor);
+    private updateKeybinds() {
+        Object.keys(this.keybindingOverrides).forEach(override => {
+            if (this.keybindingOverrides[override] === false) {
+                // Workaround to disable command from here: https://github.com/Microsoft/monaco-editor/issues/287#issuecomment-331447475
+                (<any>this._editor)._standaloneKeybindingService.addDynamicKeybinding(`-${override}`)
+            }
+        });
     }
 }

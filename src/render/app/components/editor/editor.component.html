@@ -1,3 +1,3 @@
 <form [formGroup]="form">
-    <ngx-monaco-editor [class.hidden]="!note" [options]="editorOptions" formControlName="content" [resize$]="resize$"></ngx-monaco-editor>
+    <md-monaco-editor [class.hidden]="!note" [options]="editorOptions" [keybindingOverrides]="keybindings" formControlName="content" [resize$]="resize$"></md-monaco-editor>
 </form>

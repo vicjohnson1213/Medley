@@ -1,5 +1,3 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
-
 export const MarkdownImproved = {
     defaultToken: '',
     tokenPostfix: '.md',
@@ -109,7 +107,7 @@ export const MarkdownImproved = {
         ],
         tag: [
             [/[ \t\r\n]+/, 'white'],
-            <monaco.languages.IMonarchLanguageRule>[
+            [
                 /(type)(\s*=\s*)(")([^"]+)(")/,
                 [
                     'md.html.attribute.name',
@@ -119,7 +117,7 @@ export const MarkdownImproved = {
                     'md.html.attribute.value'
                 ]
             ],
-            <monaco.languages.IMonarchLanguageRule>[
+            [
                 /(type)(\s*=\s*)(')([^']+)(')/,
                 [
                     'md.html.attribute.name',

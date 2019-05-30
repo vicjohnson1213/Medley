@@ -12,15 +12,18 @@ const LIGHT_GRAY = 'CCCCCC';
 const MEDIUM_GRAY = '999999';
 const DARK_GRAY = '444444';
 
+// Additional options for colors are available here: https://github.com/microsoft/monaco-editor/blob/master/test/playground.generated/customizing-the-appearence-exposed-colors.html#L65
 export const LightTheme: monaco.editor.IStandaloneThemeData = { base: 'vs',
     inherit: true,
     colors: {
         'editor.foreground': '#4D4D4C',
         'editor.background': '#F5F5F5',
         'editor.selectionBackground': '#00000015',
+        'editor.selectionHighlightBackground': `#${TEAL}20`,
         'editor.lineHighlightBackground': '#00000004',
         'editorCursor.foreground': '#AEAFAD',
-        'editorWhitespace.foreground': '#D1D1D1' }, 
+        'editorWhitespace.foreground': '#D1D1D1'
+    }, 
     rules: [
         { token: '', foreground: BLACK },
         { token: 'md.heading', foreground: RED },
@@ -41,6 +44,7 @@ export const LightTheme: monaco.editor.IStandaloneThemeData = { base: 'vs',
         { token: 'md.html.attribute.delimiter', foreground: MEDIUM_GRAY },
         { token: 'md.html.attribute.value', foreground: ORANGE },
 
+        // Code syntax highlighting
         { foreground: '8e908c', token: 'comment' },
         { foreground: '666969', token: 'keyword.operator.class' },
         { foreground: '666969', token: 'constant.other' },

@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MonacoEditorModule } from './components/monaco-editor';
 import { AngularSplitModule } from 'angular-split';
 import { AngularResizedEventModule } from 'angular-resize-event';
 
@@ -27,8 +26,7 @@ import { pipes } from './pipes';
         FormsModule,
         ReactiveFormsModule,
         AngularResizedEventModule,
-        AngularSplitModule.forRoot(),
-        MonacoEditorModule.forRoot()
+        AngularSplitModule.forRoot()
     ],
     providers: [
         ...services,
