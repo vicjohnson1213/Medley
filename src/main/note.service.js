@@ -19,6 +19,10 @@ function importFromNotable() {
             defaultPath: constants.HOME,
             properties: ['openDirectory', 'showHiddenFiles']
         }, (notableDir) => {
+            if (!notableDir) {
+                return;
+            }
+
             const notesDir = path.join(notableDir[0], 'notes');
             fs.readdir(notesDir)
                 .then(notes => {
@@ -44,7 +48,7 @@ function importFromNotable() {
                 })
                 .catch(err => reject(err));
         });
-    })
+    });
 }
 
 function batchAdd(notes) {
@@ -152,6 +156,10 @@ function attachImage() {
             defaultPath: constants.HOME,
             properties: ['openFile']
         }, (imagePath) => {
+            if (!imagePath) {
+                return;
+            }
+
             const filename = path.basename(imagePath[0]).replace(/\s+/g, '-');
             const newPath = path.join(constants.IMAGES_DIR, filename);
             fs.copyFile(imagePath[0], newPath, fsConstants.COPYFILE_EXCL)
