@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "notable": {
+    "medley": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",

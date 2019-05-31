@@ -3,53 +3,10 @@ const path = require('path');
 const rawFs = require('fs');
 const fs = rawFs.promises;
 const fsConstants = rawFs.constants;
-const frontMatter = require('front-matter');
 const EventEmitter = require('events').EventEmitter;
 
 const constants = require('./constants');
 const utils = require('./utils');
-
-const batchImportComplete = new EventEmitter();
-module.exports.batchImportComplete = batchImportComplete;
-
-module.exports.importFromNotable = importFromNotable;
-function importFromNotable() {
-    return new Promise((resolve, reject) => {
-        dialog.showOpenDialog({
-            defaultPath: constants.HOME,
-            properties: ['openDirectory', 'showHiddenFiles']
-        }, (notableDir) => {
-            if (!notableDir) {
-                return;
-            }
-
-            const notesDir = path.join(notableDir[0], 'notes');
-            fs.readdir(notesDir)
-                .then(notes => {
-                    const notePaths = notes.map(note => path.join(notesDir, note));
-                    return Promise.all(notePaths.map(notePath => fs.readFile(notePath, 'utf8')));
-                })
-                .then(notes => {
-                    notes = notes.map(note => {
-                        const content = frontMatter(note);
-                        return {
-                            Name: content.attributes.title,
-                            Path: `${path.join(constants.NOTES_DIR, content.attributes.title)}.md`,
-                            Tags: content.attributes.tags || [],
-                            Content: content.body
-                        };
-                    });
-
-                    batchAdd(notes)
-                        .then(() => {
-                            batchImportComplete.emit('complete');
-                            resolve();
-                        });
-                })
-                .catch(err => reject(err));
-        });
-    });
-}
 
 function batchAdd(notes) {
     const manifest = utils.requireUncached(constants.MANIFEST_FILE);

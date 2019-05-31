@@ -54,8 +54,6 @@ function createMainWindow() {
 }
 
 function registerIPC() {
-    noteSvc.batchImportComplete.on('complete', () => getNotes());
-
     ipcMain.on('getConfig', () => {
         const medleyDir = constants.MEDLEY_DIR.split(path.sep).join('/');
         mainWindow.webContents.send('getConfigResponse', {

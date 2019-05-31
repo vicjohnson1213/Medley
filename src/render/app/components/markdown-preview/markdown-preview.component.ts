@@ -4,6 +4,7 @@ import * as marked from 'marked';
 import hljs from 'highlight.js';
 
 import { AppState } from '../../services';
+import { Note } from '../../models';
 
 @Component({
     selector: 'md-markdown-preview',
@@ -13,6 +14,7 @@ import { AppState } from '../../services';
 export class MarkdownPreviewComponent implements OnInit, OnDestroy {
     @ViewChild('target') target: ElementRef;
     private subscriptions = new SubSink();
+    private note: Note;
 
     constructor(
         private renderer: Renderer2,
@@ -39,20 +41,25 @@ export class MarkdownPreviewComponent implements OnInit, OnDestroy {
         }
 
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
-            if (!note) {
-                return;
-            }
-
-            let content = note.Content || '';
-
-            content = content.replace('@image', `${this.state.config.RootDirectory}/images`);
-
-            const rendered = marked(content);
-            this.renderer.setProperty(this.target.nativeElement, 'innerHTML', rendered);
+            this.note = note;
+            this.updatePreview();
         });
     }
 
     ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    updatePreview() {
+        if (!this.note) {
+            return;
+        }
+
+        let content = this.note.Content || '';
+
+        content = content.replace('@image', `${this.state.config.RootDirectory}/images`);
+
+        const rendered = marked(content);
+        this.renderer.setProperty(this.target.nativeElement, 'innerHTML', rendered);
     }
 }
