@@ -15,12 +15,10 @@
     "build": "ng build --base-href ./",
     "watch": "ng build --base-href ./ --watch=true",
     "start": "ng build --base-href ./ && electron .",
+    "build:prod": "ng build --base-href ./ --prod",
     "electron": "electron .",
-    "dist:all": "build -mwl",
-    "dist:win": "build -w",
-    "dist:mac": "build -m",
-    "dist:linux": "build -l",
-    "publish": "build -p always"
+    "dist": "npm run build:prod && build",
+    "publish": "npm run build:prod && build -p always"
   },
   "private": true,
   "dependencies": {
