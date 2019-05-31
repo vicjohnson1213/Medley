@@ -26,6 +26,18 @@ export class MarkdownPreviewComponent implements OnInit, OnDestroy {
             }
         });
 
+        // Add a class to any lists that are actually task lists.
+        const oldListItem = marked.Renderer.prototype.listitem;
+        marked.Renderer.prototype.listitem = function(text) {
+            const isTaskListItem = text.includes('type="checkbox"');
+
+            if (isTaskListItem) {
+                return `<li class="task-list-item">${text}</li>\n`;
+            }
+
+            return oldListItem(text);
+        }
+
         this.subscriptions.sink = this.state.activeNote$.subscribe(note => {
             if (!note) {
                 return;
