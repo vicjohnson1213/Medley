@@ -42,35 +42,37 @@
         padding: 8px 12px;
     }
 
-    .tags {
-        .title {
-            margin-top: 8px;
-            padding: 8px 12px;
-            font-weight: bold;
-        }
+    .tag-list {
+        padding: 8px 12px;
+        padding-bottom: 0;
+    }
 
+    .tags {
         .tag {
             @include no-select;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            padding: 8px 12px;
+            padding: 2px 8px;
             white-space: nowrap;
             overflow-y: hidden;
+            background-color: $lightestPurple;
+            border-radius: 4px;
+            margin-top: 8px;
+            margin-right: 8px;
 
             i {
                 font-size: 16px;
-                margin-right: 4px;
-                color: $lightGray;
+                margin-left: 8px;
+                color: $purple;
+                transition: color 100ms ease-in-out;
 
                 &.delete {
-                    color: $red;
                     border-radius: 4px;
                     font-weight: bold;
-                    margin-left: auto;
                     
                     &:hover {
+                        color: $red;
                         cursor: pointer;
-                        background-color: $lighterGray;
                     }
                 }
             }

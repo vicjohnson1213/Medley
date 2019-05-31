@@ -3,14 +3,14 @@
 </form>
 
 <div class="tags">
-    <div class="title">
-        Tags
+    <div class="tag-list">
+        <span class="tag" *ngFor="let tag of (activeNote?.Tags | alphabeticalBy)">
+            <!-- <i class="material-icons">label</i> -->
+            {{ tag }}
+            <i class="material-icons delete" (click)="deleteTag(tag)">close</i>
+        </span>
     </div>
-    <div class="tag" *ngFor="let tag of (activeNote?.Tags | alphabeticalBy)">
-        <i class="material-icons">label</i>
-        {{ tag }}
-        <i class="material-icons delete" (click)="deleteTag(tag)">close</i>
-    </div>
+    
     <form [formGroup]="addTagForm" (submit)="addTag()">
         <div class="input-container"><input type="text" formControlName="tag" placeholder="Add a tag"></div>
     </form>
