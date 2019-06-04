@@ -1,7 +1,7 @@
+const { shell } = require('electron');
 const path = require('path');
 const url = require('url');
 
-const noteSvc = require('./note.service');
 const settingsSvc = require('./settings.service');
 
 function createMenu(app, mainWindow) {
@@ -13,19 +13,6 @@ function createMenu(app, mainWindow) {
                 accelerator: 'CmdOrCtrl+N',
                 click: () => {
                     mainWindow.webContents.send('createNoteRequest');
-                }
-            },
-            { type: 'separator' },
-            {
-                label: 'Import from Notable',
-                click: () => {
-                    noteSvc.importFromNotable();
-                }
-            },
-            {
-                label: 'Export',
-                click: () => {
-                    
                 }
             }
         ]
@@ -94,6 +81,10 @@ function createMenu(app, mainWindow) {
         {
             label: 'Learn More',
             click: () => { /* At some point open the website here. */ }
+        },
+        {
+            label: 'Markdown Cheat Sheet',
+            click: () => shell.openExternal('https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet')
         }
       ]
     }];
